@@ -1,0 +1,205 @@
+/* Contenedor general del panel */
+.dashboardContainer {
+    padding: 2rem;
+    background-color: #fefcec;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #fefcec;
+    border-radius: 12px;
+}
+
+/* Títulos */
+.title {
+    font-size: 2rem;
+    color: #393939;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #393939;
+    font-weight: 600;
+}
+
+/* Menú de pestañas */
+.tabMenu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tabMenu button {
+    padding: 0.6rem 1.4rem;
+    font-size: 1rem;
+    background-color: #dbdbd0;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #393939;
+    font-weight: 600;
+}
+
+.tabMenu button:hover {
+    background-color: #eb8369;
+    color: white;
+}
+
+.tabMenu .active {
+    background-color: #eb8369;
+    color: white;
+}
+
+/* Grupo de botones especiales (crear receta, crear categoría) */
+.specialActions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.specialButton {
+    background-color: #ffc107;
+    color: #393939;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    padding: 0.6rem 1.4rem;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.specialButton:hover {
+    background-color: #e0a800;
+    color: white;
+}
+
+/* Contenido de las pestañas */
+.tabContent {
+    background-color: white;
+    border: 1px solid #dbdbd0;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Botón clásico */
+.createButton {
+    background-color: #eb8369;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.createButton:hover {
+    background-color: #d96f5b;
+}
+
+/* Grid de tarjetas de recetas */
+.recetaGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.recetaCard {
+    background-color: white;
+    border: 1px solid #dbdbd0;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.recetaCard:hover {
+    transform: translateY(-3px);
+}
+
+.recetaCard h3 {
+    margin-top: 0;
+    color: #393939;
+}
+
+.recetaCard p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+/* Acciones dentro de tarjetas */
+.cardActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+.editButton,
+.deleteButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.editButton {
+    background-color: #4caf50;
+    color: white;
+}
+
+.editButton:hover {
+    background-color: #3d9440;
+    transform: scale(1.03);
+}
+
+.deleteButton {
+    background-color: #cc4444;
+    color: white;
+}
+
+.deleteButton:hover {
+    background-color: #aa2222;
+    transform: scale(1.03);
+}
+
+/* Listados simples */
+.listaSimple {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.listaItem {
+    padding: 0.75rem 1rem;
+    border: 1px solid #dbdbd0;
+    border-radius: 0.5rem;
+    background-color: #fefcec;
+    margin-bottom: 0.6rem;
+    font-size: 1rem;
+    color: #393939;
+}
+
+/* Mensajes de error */
+.error {
+    color: red;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}

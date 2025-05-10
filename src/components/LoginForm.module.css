@@ -1,0 +1,74 @@
+.formContainer {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 2rem;
+    background-color: #fefcec; /* marfil claro */
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 1.8rem;
+    color: #393939; /* gris oscuro */
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.inputGroup {
+    margin-bottom: 1rem;
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #393939;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #dbdbd0; /* gris claro */
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+.button {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #eb8369; /* coral */
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #d5725a;
+}
+
+/* 🔴 Estilo para mensaje de error */
+.error {
+    background-color: #ffd6d6;
+    color: #a94442;
+    border: 1px solid #f5c6cb;
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+/* 🟢 Estilo para mensaje de éxito o información */
+.success {
+    background-color: #d4edda;
+    color: #2f6627;
+    border: 1px solid #c3e6cb;
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}

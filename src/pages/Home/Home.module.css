@@ -1,0 +1,88 @@
+/* Fondo principal con imagen */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(to right top, #fefcec, #e9e7d7, #dbdbd0);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    padding: 2rem;
+    animation: fadeInContainer 1s ease;
+}
+
+/* Animación de aparición */
+@keyframes fadeInContainer {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Logo central */
+.logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 1.2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* Título principal */
+.title {
+    font-size: 3rem;
+    color: #393939;
+    margin-bottom: 0.8rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Subtítulo descriptivo */
+.subtitle {
+    font-size: 1.25rem;
+    color: #555555;
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+/* Grupo de botones */
+.buttonGroup {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Estilo de botones */
+.button {
+    padding: 0.9rem 2.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #eb8369;
+    color: white;
+    border: none;
+    border-radius: 0.6rem;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Efecto hover en botones */
+.button:hover {
+    background-color: #d96f5b;
+    transform: scale(1.06);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}

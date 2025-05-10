@@ -1,0 +1,36 @@
+.panelContainer {
+    padding: 2rem;
+    background-color: #fefcec;
+    min-height: 100vh;
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tab {
+    padding: 0.7rem 1.5rem;
+    border: 2px solid #eb8369;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #eb8369;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab:hover {
+    background-color: #eb8369;
+    color: #fff;
+}
+
+.activeTab {
+    background-color: #eb8369;
+    color: white;
+}
+
+.content {
+    margin-top: 1rem;
+}

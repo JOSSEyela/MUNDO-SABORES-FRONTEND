@@ -1,0 +1,75 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+    padding: 1rem 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Logo e imagen */
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.logoImage {
+    height: 48px;
+    filter: brightness(1.1) contrast(1.1);
+    transition: transform 0.2s ease;
+}
+
+.logoImage:hover {
+    transform: scale(1.05);
+}
+
+.logoText {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #2f2f2f;
+}
+
+/* Navegación */
+.nav {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #393939;
+    transition: color 0.2s ease;
+}
+
+.nav a:hover {
+    color: #eb8369;
+}
+
+.userInfo {
+    color: #666;
+    font-weight: 500;
+}
+
+.logoutButton {
+    background: none;
+    border: none;
+    color: #eb8369;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.logoutButton:hover {
+    color: #c85e4f;
+}

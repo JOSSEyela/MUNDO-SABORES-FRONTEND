@@ -1,0 +1,49 @@
+.formContainer {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 2rem;
+    background-color: #fefcec;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 1.8rem;
+    color: #393939;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #393939;
+    font-weight: 500;
+}
+
+.input,
+.textarea,
+.select {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #dbdbd0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.button {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #eb8369;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #d96f5b;
+}
