@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import styles from './Auth.module.css';
+import './styles/Register.css';
 import { ToastContainer } from '../../components/Toast';
 
 const Register: React.FC = () => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [rolId, setRolId] = useState('2'); // Default: usuario
     const [toasts, setToasts] = useState<{ message: string; type: 'success' | 'error' }[]>([]);
     const navigate = useNavigate();
 
@@ -27,7 +28,9 @@ const Register: React.FC = () => {
                 email,
                 username,
                 password,
+                rolId: parseInt(rolId)
             });
+
             addToast('✅ Registro exitoso. Redirigiendo al login...', 'success');
             setTimeout(() => navigate('/login'), 2500);
         } catch (err) {
@@ -40,7 +43,7 @@ const Register: React.FC = () => {
     };
 
     return (
-        <div className={styles.authWrapper}>
+        <div className="register-wrapper">
             <ToastContainer
                 toasts={toasts.map((toast, i) => ({
                     ...toast,
@@ -48,43 +51,54 @@ const Register: React.FC = () => {
                 }))}
             />
 
-            <div className={styles.topLink}>
-                <Link to="/home" className={styles.backButton}>← Volver al inicio</Link>
+            <div className="register-top-link">
+                <Link to="/home" className="register-back-button">← Volver al inicio</Link>
             </div>
 
-            <form className={styles.formContainer} onSubmit={handleRegister}>
-                <h2 className={styles.title}>Crear cuenta</h2>
+            <form className="register-form-container" onSubmit={handleRegister}>
+                <h2 className="register-title">Crear cuenta</h2>
 
-                <label className={styles.label}>Nombre:</label>
+                <label className="register-label">Nombre:</label>
                 <input
-                    className={styles.input}
+                    className="register-input"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
                 />
 
-                <label className={styles.label}>Correo:</label>
+                <label className="register-label">Correo:</label>
                 <input
-                    className={styles.input}
+                    className="register-input"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     type="email"
                 />
 
-                <label className={styles.label}>Contraseña:</label>
+                <label className="register-label">Contraseña:</label>
                 <input
-                    className={styles.input}
+                    className="register-input"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     type="password"
                 />
 
-                <button className={styles.button} type="submit">Registrarse</button>
+                <label className="register-label">Rol:</label>
+                <select
+                    className="register-input"
+                    value={rolId}
+                    onChange={(e) => setRolId(e.target.value)}
+                    required
+                >
+                    <option value="1">Administrador</option>
+                    <option value="2">Usuario</option>
+                </select>
+
+                <button className="register-button" type="submit">Registrarse</button>
             </form>
 
-            <div className={styles.linkText}>
+            <div className="register-link-text">
                 ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link>
             </div>
         </div>

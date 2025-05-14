@@ -1,8 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from '../pages/Home/Home';
-import Login from '../pages/auth/Login';
-import Register from '../pages/auth/Register';
+
 import PrivateRoute from './PrivateRoute';
 import UserDashboard from '../pages/user/UserDashboard';
 import CrearReceta from '../pages/CrearReceta';
@@ -10,6 +9,8 @@ import MisRecetas from '../pages/user/MisRecetas';
 import EditarReceta from '../pages/user/EditarReceta';
 import AdminDashboard from '../pages/admin/Dashboard/AdminDashboard';
 import CrearCategoria from '../pages/CrearCategoria';
+import Register from '../pages/auth/Regsiter';
+import Login from '../pages/auth/Login';
 
 const AppRouter: React.FC = () => {
     return (

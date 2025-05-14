@@ -1,0 +1,113 @@
+.register-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #fefcec, #dbdbd0);
+    padding: 2rem;
+}
+
+.register-top-link {
+    width: 100%;
+    max-width: 420px;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.register-back-button {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background-color: transparent;
+    color: #eb8369;
+    border: 2px solid #eb8369;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.register-back-button:hover {
+    background-color: #eb8369;
+    color: white;
+}
+
+.register-form-container {
+    width: 100%;
+    max-width: 420px;
+    background-color: #fefcec;
+    padding: 2.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.register-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    color: #393939;
+    margin-bottom: 1.5rem;
+}
+
+.register-label {
+    font-size: 0.95rem;
+    color: #393939;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.register-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    background-color: white;
+}
+
+.register-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #eb8369;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #d67056;
+}
+
+.register-link-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: #393939;
+}
+
+.register-link-text a {
+    color: #eb8369;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register-link-text a:hover {
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
