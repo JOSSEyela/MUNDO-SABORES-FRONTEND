@@ -1,20 +1,24 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home/Home';
 
-import PrivateRoute from './PrivateRoute';
-import UserDashboard from '../pages/user/UserDashboard';
-import CrearReceta from '../pages/CrearReceta';
-import MisRecetas from '../pages/user/MisRecetas';
-import EditarReceta from '../pages/user/EditarReceta';
+import { AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import AdminDashboard from '../pages/admin/Dashboard/AdminDashboard';
-import CrearCategoria from '../pages/CrearCategoria';
-import Register from '../pages/auth/Regsiter';
 import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Regsiter';
+import CrearCategoria from '../pages/CrearCategoria';
+import CrearReceta from '../pages/CrearReceta';
+import EditarReceta from '../pages/user/EditarReceta';
+import MisRecetas from '../pages/user/MisRecetas';
+import UserDashboard from '../pages/user/UserDashboard';
+import PrivateRoute from './PrivateRoute';
 
 const AppRouter: React.FC = () => {
+    const location = useLocation();
     return (
-        <Routes>
+    <AnimatePresence mode="wait"> 
+        <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -82,6 +86,8 @@ const AppRouter: React.FC = () => {
                 }
             />
         </Routes>
+        
+    </AnimatePresence>
     );
 };
 
