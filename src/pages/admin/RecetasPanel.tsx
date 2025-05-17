@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getRecetasNoAprobadas, aprobarReceta, eliminarReceta } from '../../api/adminRecetas';
 import { getRecetasAprobadas } from '../../api/recetas';
-import styles from '../admin/Dashboard/Dashboard.module.css';
+import '../../styles/AdminPanel.css';
 
 const RecetasPanel: React.FC = () => {
     const [recetasPendientes, setRecetasPendientes] = useState([]);
@@ -49,72 +49,66 @@ const RecetasPanel: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className="admin-panel space-y-8">
             {user?.role === 'admin' && (
-                <button className={styles.createButton} onClick={() => navigate('/crear')}>
-                    ➕ Crear receta directamente
-                </button>
-            )}
-
-            <h2 className={styles.subtitle}>Recetas pendientes de aprobación</h2>
-            {recetasPendientes.length === 0 ? (
-                <p>No hay recetas pendientes.</p>
-            ) : (
-                <div className={styles.recetaGrid}>
-                    {recetasPendientes.map((receta: any) => (
-                        <div key={receta.id} className={styles.recetaCard}>
-                            <h3>{receta.title}</h3>
-                            <p><strong>Usuario:</strong> {receta.usuario?.username}</p>
-                            <p><strong>Categoría:</strong> {receta.categoria?.nombre}</p>
-                            <p>{receta.description?.slice(0, 100)}...</p>
-                            <div className={styles.cardActions}>
-                                <button
-                                    className={styles.editButton}
-                                    onClick={() => handleAprobar(receta.id)}
-                                >
-                                    ✅ Aprobar
-                                </button>
-                                <button
-                                    className={styles.deleteButton}
-                                    onClick={() => handleEliminar(receta.id)}
-                                >
-                                    🗑️ Eliminar
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                <div className="flex justify-end">
+                    <button className="btn-primary" onClick={() => navigate('/crear')}>
+                        ➕ Crear nueva receta
+                    </button>
                 </div>
             )}
 
-            <h2 className={styles.subtitle}>Recetas publicadas</h2>
-            {recetasAprobadas.length === 0 ? (
-                <p>No hay recetas publicadas.</p>
-            ) : (
-                <div className={styles.recetaGrid}>
-                    {recetasAprobadas.map((receta: any) => (
-                        <div key={receta.id} className={styles.recetaCard}>
-                            <h3>{receta.title}</h3>
-                            <p><strong>Usuario:</strong> {receta.usuario?.username}</p>
-                            <p><strong>Categoría:</strong> {receta.categoria?.nombre}</p>
-                            <p>{receta.description?.slice(0, 100)}...</p>
-                            <div className={styles.cardActions}>
-                                <button
-                                    className={styles.editButton}
-                                    onClick={() => navigate(`/editar/${receta.id}`)}
-                                >
-                                    ✏️ Editar
-                                </button>
-                                <button
-                                    className={styles.deleteButton}
-                                    onClick={() => handleEliminar(receta.id)}
-                                >
-                                    🗑️ Eliminar
-                                </button>
+            <div>
+                <h2 className="admin-title"> Recetas pendientes de aprobación</h2>
+                {recetasPendientes.length === 0 ? (
+                    <p className="text-[#393939] text-sm">No hay recetas pendientes.</p>
+                ) : (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {recetasPendientes.map((receta: any) => (
+                            <div key={receta.id} className="admin-box">
+                                <h3 className="font-bold text-[#393939] text-lg">{receta.title}</h3>
+                                <p><strong>Usuario:</strong> {receta.usuario?.username}</p>
+                                <p><strong>Categoría:</strong> {receta.categoria?.nombre}</p>
+                                <p>{receta.description?.slice(0, 100)}...</p>
+                                <div className="flex gap-2 mt-3">
+                                    <button className="btn-primary" onClick={() => handleAprobar(receta.id)}>
+                                        ✅ Aprobar
+                                    </button>
+                                    <button className="btn-danger" onClick={() => handleEliminar(receta.id)}>
+                                        🗑️ Eliminar
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <h2 className="admin-title"> Recetas publicadas</h2>
+                {recetasAprobadas.length === 0 ? (
+                    <p className="text-[#393939] text-sm">No hay recetas publicadas.</p>
+                ) : (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {recetasAprobadas.map((receta: any) => (
+                            <div key={receta.id} className="admin-box">
+                                <h3 className="font-bold text-[#393939] text-lg">{receta.title}</h3>
+                                <p><strong>Usuario:</strong> {receta.usuario?.username}</p>
+                                <p><strong>Categoría:</strong> {receta.categoria?.nombre}</p>
+                                <p>{receta.description?.slice(0, 100)}...</p>
+                                <div className="flex gap-2 mt-3">
+                                    <button className="btn-secondary" onClick={() => navigate(`/editar/${receta.id}`)}>
+                                        ✏️ Editar
+                                    </button>
+                                    <button className="btn-danger" onClick={() => handleEliminar(receta.id)}>
+                                        🗑️ Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

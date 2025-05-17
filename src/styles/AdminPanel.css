@@ -1,0 +1,55 @@
+/* AdminPanel.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Botón principal */
+.btn-primary {
+    @apply bg-[#eb8369] text-white px-5 py-2 rounded-xl font-semibold text-sm sm:text-base shadow transition-all duration-200;
+}
+
+.btn-primary:hover {
+    @apply bg-[#cf6d55];
+}
+
+/* Botón secundario */
+.btn-secondary {
+    @apply bg-gray-100 text-[#393939] px-5 py-2 rounded-xl font-medium text-sm sm:text-base border border-gray-300 transition-all duration-200;
+}
+
+.btn-secondary:hover {
+    @apply bg-gray-200;
+}
+
+/* Botón peligro */
+.btn-danger {
+    @apply bg-red-500 text-white px-5 py-2 rounded-xl font-semibold text-sm sm:text-base transition-all duration-200;
+}
+
+.btn-danger:hover {
+    @apply bg-red-600;
+}
+
+/* Título de sección */
+.admin-title {
+    @apply text-2xl font-bold text-[#393939] mb-6;
+}
+
+/* Caja de contenido destacada */
+.admin-box {
+    @apply bg-yellow-50 border border-yellow-200 rounded-2xl p-4 shadow-inner mb-6;
+}
+
+/* Tabla o listado visual */
+.admin-list {
+    @apply w-full border border-gray-200 rounded-lg overflow-hidden;
+}
+
+.admin-list-header {
+    @apply bg-[#eb8369] text-white px-4 py-2 font-semibold;
+}
+
+.admin-list-row {
+    @apply px-4 py-2 border-b border-gray-100 text-[#393939];
+}

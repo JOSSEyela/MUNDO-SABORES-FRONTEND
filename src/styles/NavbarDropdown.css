@@ -1,0 +1,27 @@
+@keyframes fadeSlideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar-dropdown {
+    position: absolute;
+    top: 100%;
+    margin-top: 1rem;
+    /* más separación hacia abajo */
+    right: 0;
+    width: 14rem;
+    background-color: #d7bf687a;
+    border: 1px solid #e5e7eb;
+    /* Tailwind gray-200 */
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    animation: fadeSlideDown 0.25s ease-out forwards;
+}
