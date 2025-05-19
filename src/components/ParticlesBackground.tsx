@@ -2,9 +2,11 @@
 import React, { useCallback } from 'react';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
+import { Engine } from 'tsparticles-engine';
 
 const FoodParticlesBackground: React.FC = () => {
-  const particlesInit = useCallback(async (engine) => {
+
+  const particlesInit = useCallback(async (engine: Engine): Promise<void> => {
     await loadFull(engine);
   }, []);
 

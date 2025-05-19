@@ -9,19 +9,21 @@ import CrearReceta from '../pages/CrearReceta';
 import EditarReceta from '../pages/user/EditarReceta';
 import MisRecetas from '../pages/user/MisRecetas';
 import UserDashboard from '../pages/user/UserDashboard';
-import PrivateRoute from './PrivateRoute';
-
-import AdminDashboard from '../pages/admin/Dashboard/AdminDashboard';
-import CrearCategoria from '../pages/CrearCategoria';
-
-
-import AdminProductos from '../pages/admin/AdminProductos';
-import MisProductos from '../pages/MisProductos';
 import CrearProducto from '../pages/user/CrearProducto';
+import MisProductos from '../pages/MisProductos';
+import Perfil from '../pages/Perfil';
+
+import CrearCategoria from '../pages/CrearCategoria';
+import AdminProductos from '../pages/admin/AdminProductos';
+import RecetaPanel from '../pages/admin/RecetasPanel';
+import UsuarioPanel from '../pages/admin/UsuarioPanel';
+
+import PrivateRoute from './PrivateRoute';
 
 const AppRouter: React.FC = () => {
   return (
     <Routes>
+      {/* Rutas públicas */}
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
@@ -60,6 +62,14 @@ const AppRouter: React.FC = () => {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/perfil"
+        element={
+          <PrivateRoute role={['user', 'admin']}>
+            <Perfil />
+          </PrivateRoute>
+        }
+      />
 
       {/* Rutas de productos para usuarios */}
       <Route
@@ -84,7 +94,7 @@ const AppRouter: React.FC = () => {
         path="/admin"
         element={
           <PrivateRoute role="admin">
-            <AdminDashboard />
+            <RecetaPanel />
           </PrivateRoute>
         }
       />
@@ -101,6 +111,14 @@ const AppRouter: React.FC = () => {
         element={
           <PrivateRoute role="admin">
             <AdminProductos />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/usuarios"
+        element={
+          <PrivateRoute role="admin">
+            <UsuarioPanel />
           </PrivateRoute>
         }
       />

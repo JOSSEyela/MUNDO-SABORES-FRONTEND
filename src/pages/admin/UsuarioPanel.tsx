@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
 import api from '../../api/axiosConfig';
+import Navbar from '../Navbar';
 
 interface Usuario {
     id: number;
@@ -45,42 +47,89 @@ const UsuarioPanel: React.FC = () => {
         cargarUsuarios();
     }, []);
 
-    // Filtrar usuarios únicos por ID
     const usuariosUnicos = usuarios.filter(
         (usuario, index, self) =>
             index === self.findIndex((u) => u.id === usuario.id)
     );
 
+    const columnas = [
+        {
+            name: '👤 Usuario',
+            selector: (row: Usuario) => row.username,
+            sortable: true,
+        },
+        {
+            name: '📧 Email',
+            selector: (row: Usuario) => row.email,
+            sortable: true,
+        },
+        {
+            name: '🔖 Rol',
+            selector: (row: Usuario) => row.rol?.name ?? 'Desconocido',
+            sortable: true,
+        },
+        {
+            name: '🗑️ Acciones',
+            cell: (row: Usuario) => (
+                <button
+                    onClick={() => eliminarUsuario(row.id)}
+                    className="bg-[#eb8369] hover:bg-[#cf6d55] text-white px-3 py-1 rounded text-sm shadow transition duration-200"
+                >
+                    Eliminar
+                </button>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+    ];
+
     return (
-        <div className="p-6 bg-white rounded-xl shadow-md">
-            <h2 className="text-xl font-semibold text-[#393939] mb-4">Gestión de Usuarios</h2>
+        <>
+            <Navbar />
+            <div className="min-h-screen bg-gradient-to-br from-[#fefcec] via-white to-[#fefcec] p-6 space-y-6">
+                <h2 className="text-2xl font-semibold text-[#393939]">Gestión de Usuarios</h2>
 
-            {error && <p className="text-red-600 font-medium mb-2">{error}</p>}
-            {mensaje && <p className="text-green-600 font-medium mb-2">{mensaje}</p>}
+                {error && <p className="text-red-600 font-medium">{error}</p>}
+                {mensaje && <p className="text-green-600 font-medium">{mensaje}</p>}
 
-            {usuariosUnicos.length === 0 && !error ? (
-                <p className="text-gray-600">No hay usuarios registrados.</p>
-            ) : (
-                <ul className="space-y-3">
-                    {usuariosUnicos.map((u) => (
-                        <li
-                            key={u.id}
-                            className="flex items-center justify-between bg-[#fefcec] border border-gray-300 rounded-lg px-4 py-3"
-                        >
-                            <span className="text-[#393939]">
-                                👤 <strong>{u.username}</strong> – Rol: {u.rol?.name ?? 'Desconocido'}
-                            </span>
-                            <button
-                                onClick={() => eliminarUsuario(u.id)}
-                                className="bg-[#eb8369] hover:bg-[#cf6d55] text-white px-3 py-1 rounded text-sm"
-                            >
-                                🗑️ Eliminar
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+                <div className="rounded-lg overflow-hidden border border-[#dbdbd0] bg-white shadow">
+                    <DataTable
+                        columns={columnas}
+                        data={usuariosUnicos}
+                        pagination
+                        highlightOnHover
+                        striped
+                        responsive
+                        noDataComponent={
+                            <div className="text-gray-500 py-4 text-center">No hay usuarios registrados.</div>
+                        }
+                        customStyles={{
+                            headCells: {
+                                style: {
+                                    backgroundColor: '#FEFCEC',
+                                    color: '#393939',
+                                    fontWeight: '600',
+                                },
+                            },
+                            rows: {
+                                style: {
+                                    fontSize: '14px',
+                                    color: '#393939',
+                                },
+                            },
+                            pagination: {
+                                style: {
+                                    backgroundColor: '#fff',
+                                    borderTop: '1px solid #DBDBD0',
+                                    padding: '12px',
+                                },
+                            },
+                        }}
+                    />
+                </div>
+            </div>
+        </>
     );
 };
 

@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Puedes usar import.meta.env.VITE_BACKEND_URL si tienes variables de entorno configuradas con Vite
+const BACKEND_URL = 'http://localhost:8080';
+
 const api = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: BACKEND_URL,
 });
 
 // Interceptor para agregar token automáticamente a cada solicitud
@@ -19,3 +22,4 @@ api.interceptors.request.use(
 );
 
 export default api;
+export { BACKEND_URL };
