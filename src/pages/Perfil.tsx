@@ -88,7 +88,7 @@ const Perfil: React.FC = () => {
         }
     };
 
-    if (!perfil) return <p className="text-center mt-10 text-gray-500">Cargando perfil...</p>;
+    if (!perfil) return <p className="text-center mt-10 text-gray-500 dark:text-gray-300">Cargando perfil...</p>;
 
     const avatarUrl = perfil.avatarUrl
         ? `${BACKEND_URL}${perfil.avatarUrl}?t=${avatarTimestamp}`
@@ -97,8 +97,8 @@ const Perfil: React.FC = () => {
     return (
         <>
             <Navbar />
-            <div className="bg-white w-full max-w-4xl mx-auto mt-10 rounded-lg shadow-md border border-gray-200">
-                <h5 className="bg-gray-100 rounded-t-lg p-4 text-xl font-bold text-gray-800">Editar Perfil</h5>
+            <div className="bg-white dark:bg-[#1e1e1e] text-[#393939] dark:text-white w-full max-w-4xl mx-auto mt-10 rounded-lg shadow-md border border-gray-200 dark:border-gray-600">
+                <h5 className="bg-gray-100 dark:bg-[#2a2a2a] rounded-t-lg p-4 text-xl font-bold">Editar Perfil</h5>
                 <div className="p-6">
                     {/* Foto de Perfil */}
                     <div className="text-center mb-8">
@@ -107,7 +107,7 @@ const Perfil: React.FC = () => {
                             <img
                                 src={avatarUrl}
                                 alt="Avatar"
-                                className="w-28 h-28 rounded-full object-cover border shadow"
+                                className="w-32 h-32 rounded-full object-cover border shadow"
                             />
                             <input
                                 type="file"
@@ -133,7 +133,7 @@ const Perfil: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Datos de Cuenta */}
+                    {/* Formulario de Perfil */}
                     <form onSubmit={handleUpdate} className="grid gap-y-6">
                         <div>
                             <h6 className="text-lg font-semibold">1. Datos de Cuenta</h6>

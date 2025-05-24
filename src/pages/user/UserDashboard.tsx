@@ -6,6 +6,7 @@ import {
     getMisRecetas,
     eliminarReceta
 } from '../../api/recetas';
+import { getProductosAprobados } from '../../api/productos';
 import api from '../../api/axiosConfig';
 import Navbar from '../../pages/Navbar';
 
@@ -14,19 +15,19 @@ const UserDashboard: React.FC = () => {
     const navigate = useNavigate();
     const [recetas, setRecetas] = useState([]);
     const [misRecetas, setMisRecetas] = useState([]);
-    const [categorias, setCategorias] = useState([]);
+    const [productos, setProductos] = useState([]);
     const [error, setError] = useState('');
 
     const cargarDatos = async () => {
         try {
-            const [aprobadas, mias, cats] = await Promise.all([
+            const [aprobadas, mias, aprobados] = await Promise.all([
                 getRecetasAprobadas(),
                 getMisRecetas(),
-                api.get('/categorias'),
+                getProductosAprobados()
             ]);
             setRecetas(aprobadas);
             setMisRecetas(mias);
-            setCategorias(cats.data);
+            setProductos(aprobados);
         } catch (err) {
             console.error('Error al cargar datos:', err);
             setError('No se pudieron cargar los datos.');
@@ -51,8 +52,10 @@ const UserDashboard: React.FC = () => {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen bg-gradient-to-br from-[#fefcec] via-[#e6f4f1] to-[#d7e4dc] p-6 sm:p-10">
-                <h1 className="text-2xl font-bold text-[#393939] mb-6">¡Hola, {user?.username}! 👨‍🍳</h1>
+            <div className="min-h-screen bg-gradient-to-br from-[#fefcec] via-[#e6f4f1] to-[#d7e4dc] dark:from-[#1e1e1e] dark:via-[#2e2e2e] dark:to-[#1a1a1a] p-6 sm:p-10 transition-colors">
+                <h1 className="text-2xl font-bold text-[#393939] dark:text-white mb-6">
+                    ¡Hola, {user?.username}! 👨‍🍳
+                </h1>
 
                 <div className="text-center mb-8">
                     <button
@@ -63,17 +66,17 @@ const UserDashboard: React.FC = () => {
                     </button>
                 </div>
 
-                {error && <p className="text-red-600 mb-4">{error}</p>}
+                {error && <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>}
 
                 {/* Recetas globales */}
                 <section className="mb-10">
-                    <h2 className="text-xl font-semibold text-[#393939] mb-4">Recetas Aprobadas Globales</h2>
+                    <h2 className="text-xl font-semibold text-[#393939] dark:text-white mb-4">Recetas Aprobadas Globales</h2>
                     {recetas.length === 0 ? (
-                        <p className="text-gray-600">No hay recetas disponibles aún.</p>
+                        <p className="text-gray-600 dark:text-gray-400">No hay recetas disponibles aún.</p>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {recetas.map((receta: any) => (
-                                <div key={receta.id} className="card bg-white border border-gray-200 rounded-xl shadow overflow-hidden">
+                                <div key={receta.id} className="card bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow overflow-hidden">
                                     <figure>
                                         <img
                                             src="https://cdn.pixabay.com/photo/2017/05/07/08/56/eat-2294021_960_720.jpg"
@@ -82,11 +85,11 @@ const UserDashboard: React.FC = () => {
                                         />
                                     </figure>
                                     <div className="card-body p-4 space-y-2">
-                                        <h3 className="card-title text-lg font-semibold text-[#393939]">{receta.title}</h3>
-                                        <p className="text-sm text-gray-600">
+                                        <h3 className="card-title text-lg font-semibold text-[#393939] dark:text-white">{receta.title}</h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300">
                                             <strong>Categoría:</strong> {receta.categoria?.nombre ?? 'Sin categoría'}
                                         </p>
-                                        <p className="text-sm text-gray-700">{receta.description?.slice(0, 100)}...</p>
+                                        <p className="text-sm text-gray-700 dark:text-gray-400">{receta.description?.slice(0, 100)}...</p>
                                     </div>
                                 </div>
                             ))}
@@ -96,13 +99,13 @@ const UserDashboard: React.FC = () => {
 
                 {/* Mis recetas */}
                 <section className="mb-10">
-                    <h2 className="text-xl font-semibold text-[#393939] mb-4">Mis Recetas</h2>
+                    <h2 className="text-xl font-semibold text-[#393939] dark:text-white mb-4">Mis Recetas</h2>
                     {misRecetas.length === 0 ? (
-                        <p className="text-gray-600">No has creado recetas todavía.</p>
+                        <p className="text-gray-600 dark:text-gray-400">No has creado recetas todavía.</p>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {misRecetas.map((receta: any) => (
-                                <div key={receta.id} className="card bg-white border border-gray-200 rounded-xl shadow overflow-hidden">
+                                <div key={receta.id} className="card bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow overflow-hidden">
                                     <figure>
                                         <img
                                             src="https://cdn.pixabay.com/photo/2015/04/08/13/13/food-712665_960_720.jpg"
@@ -111,11 +114,11 @@ const UserDashboard: React.FC = () => {
                                         />
                                     </figure>
                                     <div className="card-body p-4 space-y-2">
-                                        <h3 className="card-title text-lg font-semibold text-[#393939]">{receta.title}</h3>
-                                        <p className="text-sm text-gray-600">
+                                        <h3 className="card-title text-lg font-semibold text-[#393939] dark:text-white">{receta.title}</h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300">
                                             <strong>Categoría:</strong> {receta.categoria?.nombre ?? 'Sin categoría'}
                                         </p>
-                                        <p className="text-sm">
+                                        <p className="text-sm text-gray-700 dark:text-gray-400">
                                             <strong>Aprobada:</strong> {receta.aprobado ? '✅ Sí' : '⏳ No aún'}
                                         </p>
                                         {!receta.aprobado && (
@@ -141,17 +144,28 @@ const UserDashboard: React.FC = () => {
                     )}
                 </section>
 
-                {/* Categorías */}
+                {/* Productos aprobados */}
                 <section>
-                    <h2 className="text-xl font-semibold text-[#393939] mb-4">Categorías disponibles</h2>
-                    {categorias.length === 0 ? (
-                        <p className="text-gray-600">No hay categorías aún.</p>
+                    <h2 className="text-xl font-semibold text-[#393939] dark:text-white mb-4">Productos Aprobados</h2>
+                    {productos.length === 0 ? (
+                        <p className="text-gray-600 dark:text-gray-400">No hay productos aprobados aún.</p>
                     ) : (
-                        <ul className="list-disc pl-6 space-y-1 text-gray-700">
-                            {categorias.map((cat: any) => (
-                                <li key={cat.id}>📁 {cat.nombre}</li>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {productos.map((producto: any) => (
+                                <div key={producto.id} className="card bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow overflow-hidden">
+                                    <div className="card-body p-4 space-y-2">
+                                        <h3 className="card-title text-lg font-semibold text-[#393939] dark:text-white">{producto.nombre}</h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                                            <strong>Precio:</strong> ${producto.price}
+                                        </p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                                            <strong>Región:</strong> {producto.region}
+                                        </p>
+                                        <p className="text-sm text-gray-700 dark:text-gray-400">{producto.descripcion?.slice(0, 100)}...</p>
+                                    </div>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
                     )}
                 </section>
             </div>

@@ -18,7 +18,9 @@ import AdminProductos from '../pages/admin/AdminProductos';
 import RecetaPanel from '../pages/admin/RecetasPanel';
 import UsuarioPanel from '../pages/admin/UsuarioPanel';
 
+
 import PrivateRoute from './PrivateRoute';
+import RegionesPanel from '../pages/admin/RegionesPanel';
 
 const AppRouter: React.FC = () => {
   return (
@@ -119,6 +121,14 @@ const AppRouter: React.FC = () => {
         element={
           <PrivateRoute role="admin">
             <UsuarioPanel />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/regiones"
+        element={
+          <PrivateRoute role="admin">
+            <RegionesPanel />
           </PrivateRoute>
         }
       />

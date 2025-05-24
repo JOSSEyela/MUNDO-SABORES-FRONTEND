@@ -41,3 +41,15 @@ export const getProductoById = async (id: number) => {
   const response = await api.get(`/productos/${id}`);
   return response.data;
 };
+
+// ✅ Obtener productos aprobados
+export const getProductosAprobados = async () => {
+  const response = await api.get('/productos/aprobados');
+  return response.data;
+};
+
+// Obtener productos no aprobados
+export const getProductosNoAprobados = async () => {
+  const response = await api.get('/productos/no-aprobados');
+  return response.data;
+};

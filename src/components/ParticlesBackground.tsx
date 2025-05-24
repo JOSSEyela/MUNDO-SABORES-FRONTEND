@@ -53,12 +53,19 @@ const FoodParticlesBackground: React.FC = () => {
           },
           move: {
             enable: true,
-            speed: 1,
+            speed: 1.5,
             direction: 'none',
+            random: true,
+            straight: false,
             outModes: {
-              default: 'out',
+              default: 'bounce',
+            },
+            bounce: true,
+            attract: {
+              enable: false,
             },
           },
+          
         },
         interactivity: {
           events: {

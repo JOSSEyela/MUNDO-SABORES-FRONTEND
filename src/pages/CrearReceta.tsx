@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { crearReceta } from '../api/recetas';
 import { getCategorias } from '../api/categorias';
+import { getRegiones } from '../api/regiones';
 import Navbar from '../pages/Navbar';
 import { useAuth } from '../context/AuthContext';
 import fondoRecetas from '../assets/images/fondo-recetas.jpg';
+import { toast } from 'react-toastify';
 
 const CrearReceta: React.FC = () => {
     const navigate = useNavigate();
@@ -14,33 +16,45 @@ const CrearReceta: React.FC = () => {
     const [description, setDescription] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
-    const [region, setRegion] = useState('');
+    const [regionId, setRegionId] = useState<number>(0);
     const [categoriaId, setCategoriaId] = useState<number>(0);
     const [categorias, setCategorias] = useState<any[]>([]);
+    const [regiones, setRegiones] = useState<any[]>([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchCategorias = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getCategorias();
-                setCategorias(data);
-                if (data.length > 0) setCategoriaId(data[0].id);
-            } catch (err) {
-                setError('Error al cargar categorías.');
+                const [cats, regs] = await Promise.all([
+                    getCategorias(),
+                    getRegiones()
+                ]);
+                setCategorias(cats);
+                setRegiones(regs);
+                if (cats.length > 0) setCategoriaId(cats[0].id);
+                if (regs.length > 0) setRegionId(regs[0].id);
+            } catch {
+                setError('Error al cargar categorías o regiones.');
             }
         };
-        fetchCategorias();
+        fetchData();
     }, []);
+
+    const validarCampos = () => {
+        if (!title || !description || !ingredients || !instructions || !regionId || !categoriaId) {
+            setError('❌ Todos los campos son obligatorios.');
+            return false;
+        }
+        return true;
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
-        if (!categoriaId) {
-            setError('Por favor selecciona una categoría válida');
-            return;
-        }
+        if (!validarCampos()) return;
 
+        const region = regiones.find((r) => r.id === regionId)?.nombre || '';
         const receta = {
             title,
             description,
@@ -52,16 +66,11 @@ const CrearReceta: React.FC = () => {
 
         try {
             await crearReceta(receta);
-
-            if (user?.role === 'admin') {
-                alert('✅ Receta creada y publicada exitosamente');
-                navigate('/admin');
-            } else {
-                alert('✅ Receta enviada para aprobación del administrador');
-                navigate('/user');
-            }
-
-        } catch (err: any) {
+            toast.success(user?.role === 'admin'
+                ? '✅ Receta creada y publicada exitosamente'
+                : '✅ Receta enviada para aprobación');
+            navigate(user?.role === 'admin' ? '/admin' : '/user');
+        } catch (err) {
             console.error(err);
             setError('Error al crear la receta. Verifica los campos.');
         }
@@ -70,88 +79,92 @@ const CrearReceta: React.FC = () => {
     return (
         <>
             <Navbar />
-            <div className="relative min-h-screen bg-[#fefcec] overflow-hidden">
-                {/* Imagen de fondo decorativa */}
+            <div className="relative min-h-screen bg-ivory dark:bg-[#1e1e1e] transition-colors overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
                         src={fondoRecetas}
                         alt="fondo recetas"
                         className="w-full h-full object-cover opacity-20 blur-sm"
                     />
-
                 </div>
 
-                {/* Contenido principal del formulario */}
                 <div className="relative z-10 px-4 py-10 sm:px-6 lg:px-8">
                     <form
                         onSubmit={handleSubmit}
-                        className="max-w-3xl mx-auto bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-6 border border-gray-200 animate-fade-in"
+                        className="max-w-3xl mx-auto bg-white/90 dark:bg-[#2c2c2c]/90 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-6 border border-gray-200 dark:border-gray-700 animate-fade-in"
                     >
-                        <h2 className="text-2xl font-bold text-[#393939] text-center">Crear Receta</h2>
+                        <h2 className="text-2xl font-bold text-center text-[#393939] dark:text-white">
+                            Crear Receta
+                        </h2>
 
                         {error && (
-                            <p className="text-red-600 font-medium text-sm bg-red-100 p-2 rounded">{error}</p>
+                            <p className="text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 font-medium text-sm p-2 rounded">
+                                {error}
+                            </p>
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-[#393939]">Título</label>
+                            <label className="label-text dark:text-gray-200">Título</label>
                             <input
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                required
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-coral focus:border-coral"
+                                placeholder="Ej: Sancocho de gallina"
+                                className="input-field"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-[#393939]">Descripción</label>
+                            <label className="label-text dark:text-gray-200">Descripción</label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                required
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-coral focus:border-coral"
+                                placeholder="Breve historia o contexto del plato"
+                                className="input-field h-20"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-[#393939]">Ingredientes</label>
+                            <label className="label-text dark:text-gray-200">Ingredientes</label>
                             <textarea
                                 value={ingredients}
                                 onChange={(e) => setIngredients(e.target.value)}
-                                required
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-coral focus:border-coral"
+                                placeholder="Lista de ingredientes separados por coma"
+                                className="input-field h-20"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-[#393939]">Instrucciones</label>
+                            <label className="label-text dark:text-gray-200">Instrucciones</label>
                             <textarea
                                 value={instructions}
                                 onChange={(e) => setInstructions(e.target.value)}
-                                required
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-coral focus:border-coral"
+                                placeholder="Pasos detallados para la preparación"
+                                className="input-field h-24"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-[#393939]">Región</label>
-                            <input
-                                type="text"
-                                value={region}
-                                onChange={(e) => setRegion(e.target.value)}
-                                required
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-coral focus:border-coral"
-                            />
+                            <label className="label-text dark:text-gray-200">Región</label>
+                            <select
+                                value={regionId}
+                                onChange={(e) => setRegionId(Number(e.target.value))}
+                                className="input-field"
+                            >
+                                {regiones.map((r) => (
+                                    <option key={r.id} value={r.id}>
+                                        {r.nombre}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-[#393939]">Categoría</label>
+                            <label className="label-text dark:text-gray-200">Categoría</label>
                             <select
                                 value={categoriaId}
                                 onChange={(e) => setCategoriaId(Number(e.target.value))}
-                                required
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-coral focus:border-coral"
+                                className="input-field"
                             >
                                 {categorias.map((cat) => (
                                     <option key={cat.id} value={cat.id}>
@@ -164,9 +177,9 @@ const CrearReceta: React.FC = () => {
                         <div className="flex justify-center">
                             <button
                                 type="submit"
-                                className="bg-[#eb8369] hover:bg-[#cf6d55] text-white px-6 py-2 rounded-lg shadow-md font-medium transition transform hover:scale-105"
+                                className="bg-coral hover:bg-peach text-white px-6 py-2 rounded-lg shadow-md font-medium transition transform hover:scale-105"
                             >
-                                Enviar
+                                Enviar Receta
                             </button>
                         </div>
                     </form>
@@ -177,4 +190,3 @@ const CrearReceta: React.FC = () => {
 };
 
 export default CrearReceta;
-
