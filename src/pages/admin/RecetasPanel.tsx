@@ -99,12 +99,30 @@ const RecetasPanel: React.FC = () => {
     }
 
     const renderProductoCard = (producto: any, isPendiente: boolean) => (
-        <div key={producto.id} className="bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 space-y-2 transition-all">
-            <h3 className="text-lg font-semibold text-[#393939] dark:text-white">{producto.nombre}</h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300"><strong>Usuario:</strong> {producto.usuario?.username}</p>
-            <p className="text-sm text-gray-700 dark:text-gray-300"><strong>Categoría:</strong> {producto.categoria?.nombre ?? 'Sin categoría'}</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{producto.descripcion?.slice(0, 100)}...</p>
-            <div className="flex gap-2 pt-2 justify-end">
+        <div
+            key={producto.id}
+            className="bg-white dark:bg-[#2c2c2c] border-l-4 border-yellow-400 dark:border-yellow-500 rounded-xl shadow-md p-5 space-y-3 hover:shadow-lg transition-all"
+        >
+            <h3 className="text-xl font-bold text-[#393939] dark:text-white">
+                🛍️ {producto.name}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+                👤 <strong>Usuario:</strong> {producto.usuario?.username ?? 'Desconocido'}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+                🏷️ <strong>Categoría:</strong> {producto.categoria?.nombre ?? 'Sin categoría'}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+                📝 {producto.description?.slice(0, 100)}...
+            </p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+                💲 <strong>Precio:</strong> ${producto.price}
+            </p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+                🌍 <strong>Región:</strong> {producto.region?.nombre ?? 'Sin región'}
+            </p>
+
+            <div className="flex flex-wrap gap-2 justify-end pt-2">
                 {isPendiente ? (
                     <>
                         <button
@@ -121,16 +139,26 @@ const RecetasPanel: React.FC = () => {
                         </button>
                     </>
                 ) : (
-                    <button
-                        onClick={() => handleEliminarProducto(producto.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm transition"
-                    >
-                        🗑️ Eliminar
-                    </button>
+                    <>
+                        <button
+                            onClick={() => navigate(`/editar-producto/${producto.id}`)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm transition"
+                        >
+                            ✏️ Editar
+                        </button>
+                        <button
+                            onClick={() => handleEliminarProducto(producto.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm transition"
+                        >
+                            🗑️ Eliminar
+                        </button>
+                    </>
                 )}
             </div>
         </div>
     );
+      
+
 
     const renderRecetaCard = (receta: any, isPendiente: boolean) => (
         <div key={receta.id} className="bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 space-y-2 transition-all">

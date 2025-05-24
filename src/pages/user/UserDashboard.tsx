@@ -7,7 +7,6 @@ import {
     eliminarReceta
 } from '../../api/recetas';
 import { getProductosAprobados } from '../../api/productos';
-import api from '../../api/axiosConfig';
 import Navbar from '../../pages/Navbar';
 
 const UserDashboard: React.FC = () => {
@@ -68,7 +67,7 @@ const UserDashboard: React.FC = () => {
 
                 {error && <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>}
 
-                {/* Recetas globales */}
+                {/* Recetas aprobadas globales */}
                 <section className="mb-10">
                     <h2 className="text-xl font-semibold text-[#393939] dark:text-white mb-4">Recetas Aprobadas Globales</h2>
                     {recetas.length === 0 ? (
@@ -154,14 +153,14 @@ const UserDashboard: React.FC = () => {
                             {productos.map((producto: any) => (
                                 <div key={producto.id} className="card bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow overflow-hidden">
                                     <div className="card-body p-4 space-y-2">
-                                        <h3 className="card-title text-lg font-semibold text-[#393939] dark:text-white">{producto.nombre}</h3>
+                                        <h3 className="card-title text-lg font-semibold text-[#393939] dark:text-white">{producto.name}</h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-300">
                                             <strong>Precio:</strong> ${producto.price}
                                         </p>
                                         <p className="text-sm text-gray-600 dark:text-gray-300">
-                                            <strong>Región:</strong> {producto.region}
+                                            <strong>Región:</strong> {producto.region?.nombre ?? 'No especificada'}
                                         </p>
-                                        <p className="text-sm text-gray-700 dark:text-gray-400">{producto.descripcion?.slice(0, 100)}...</p>
+                                        <p className="text-sm text-gray-700 dark:text-gray-400">{producto.description?.slice(0, 100)}...</p>
                                     </div>
                                 </div>
                             ))}

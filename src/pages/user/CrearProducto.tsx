@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
 import Navbar from '../../pages/Navbar';
+import { getRegiones } from '../../api/regiones';
 
 const CrearProducto: React.FC = () => {
   const navigate = useNavigate();
@@ -10,16 +11,32 @@ const CrearProducto: React.FC = () => {
     name: '',
     description: '',
     price: '',
-    region: ''
+    regionId: '',
   });
 
+  const [regiones, setRegiones] = useState<any[]>([]);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    const cargarRegiones = async () => {
+      try {
+        const data = await getRegiones();
+        setRegiones(data);
+      } catch (err) {
+        console.error('Error al cargar regiones', err);
+        setError('Error al cargar las regiones');
+      }
+    };
+    cargarRegiones();
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -29,13 +46,15 @@ const CrearProducto: React.FC = () => {
     setError('');
 
     try {
-      const response = await api.post('/productos', {
-        ...formData,
-        price: parseFloat(formData.price)
+      await api.post('/productos', {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        regionId: Number(formData.regionId),
       });
 
       setMensaje('✅ Producto creado exitosamente');
-      setFormData({ name: '', description: '', price: '', region: '' });
+      setFormData({ name: '', description: '', price: '', regionId: '' });
       setTimeout(() => navigate('/mis-productos'), 1200);
     } catch (err: any) {
       console.error(err);
@@ -66,9 +85,7 @@ const CrearProducto: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block font-medium text-[#393939] dark:text-gray-200 flex items-center gap-2">
-                📛 Nombre
-              </label>
+              <label className="block font-medium text-[#393939] dark:text-gray-200">📛 Nombre</label>
               <input
                 type="text"
                 name="name"
@@ -86,9 +103,7 @@ const CrearProducto: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-medium text-[#393939] dark:text-gray-200 flex items-center gap-2">
-                Descripción
-              </label>
+              <label className="block font-medium text-[#393939] dark:text-gray-200">Descripción</label>
               <textarea
                 name="description"
                 value={formData.description}
@@ -101,9 +116,7 @@ const CrearProducto: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-medium text-[#393939] dark:text-gray-200 flex items-center gap-2">
-                💲 Precio
-              </label>
+              <label className="block font-medium text-[#393939] dark:text-gray-200">💲 Precio</label>
               <input
                 type="number"
                 step="0.01"
@@ -122,18 +135,21 @@ const CrearProducto: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-medium text-[#393939] dark:text-gray-200 flex items-center gap-2">
-                🌎 Región
-              </label>
-              <input
-                type="text"
-                name="region"
-                value={formData.region}
+              <label className="block font-medium text-[#393939] dark:text-gray-200">🌎 Región</label>
+              <select
+                name="regionId"
+                value={formData.regionId}
                 onChange={handleChange}
                 required
                 className="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#eb8369] dark:bg-[#1f1f1f] dark:text-white dark:border-gray-600"
-                placeholder="Ej. Mocoa, Putumayo"
-              />
+              >
+                <option value="">Seleccione una región</option>
+                {regiones.map((region) => (
+                  <option key={region.id} value={region.id}>
+                    {region.nombre}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="text-center pt-2">
@@ -141,9 +157,7 @@ const CrearProducto: React.FC = () => {
                 type="submit"
                 className="bg-[#eb8369] hover:bg-[#cf6d55] text-white px-6 py-2 rounded shadow-md font-medium transition duration-300 transform hover:scale-105 active:scale-95"
               >
-                <span className="flex items-center justify-center gap-2">
-                  Crear Producto
-                </span>
+                Crear Producto
               </button>
             </div>
           </form>

@@ -3,6 +3,7 @@ import { getRegiones, crearRegion, eliminarRegion } from '../../api/regiones';
 import Navbar from '../Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import fondo from '../../assets/images/fondo-recetas.jpg'; 
 
 const RegionesPanel: React.FC = () => {
     const [regiones, setRegiones] = useState([]);
@@ -52,32 +53,56 @@ const RegionesPanel: React.FC = () => {
         <>
             <Navbar />
             <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-            <div className="p-6 max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold mb-4 text-[#393939] dark:text-white">🌍 Gestión de Regiones</h1>
 
-                <div className="flex gap-2 mb-6">
-                    <input
-                        type="text"
-                        value={nuevaRegion}
-                        onChange={(e) => setNuevaRegion(e.target.value)}
-                        placeholder="Nueva región"
-                        className="px-4 py-2 border rounded w-full dark:bg-[#2b2b2b] dark:text-white dark:border-gray-600"
+            <div className="relative min-h-screen bg-gradient-to-br from-[#fefcec] via-white to-[#fefcec] dark:from-[#1a1a1a] dark:via-[#111] dark:to-[#1a1a1a] transition-colors">
+                <div className="absolute inset-0 -z-10">
+                    <img
+                        src={fondo}
+                        alt="fondo regiones"
+                        className="w-full h-full object-cover opacity-20 blur-sm"
                     />
-                    <button onClick={handleCrear} className="bg-coral text-white px-4 py-2 rounded">
-                        ➕ Crear
-                    </button>
                 </div>
 
-                <ul className="space-y-2">
-                    {regiones.map((region: any) => (
-                        <li key={region.id} className="flex justify-between items-center bg-white dark:bg-[#2c2c2c] p-3 rounded shadow">
-                            <span className="text-[#393939] dark:text-white">{region.nombre}</span>
-                            <button onClick={() => handleEliminar(region.id)} className="text-red-500 hover:underline text-sm">
-                                🗑️ Eliminar
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                <div className="relative z-10 p-6 max-w-4xl mx-auto space-y-6">
+                    <h1 className="text-2xl font-bold text-[#393939] dark:text-white text-center">
+                        🌍 Gestión de Regiones
+                    </h1>
+
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={nuevaRegion}
+                            onChange={(e) => setNuevaRegion(e.target.value)}
+                            placeholder="Nueva región"
+                            className="px-4 py-2 border rounded w-full dark:bg-[#2b2b2b] dark:text-white dark:border-gray-600"
+                        />
+                        <button
+                            onClick={handleCrear}
+                            className="bg-coral text-white px-4 py-2 rounded"
+                        >
+                            ➕ Crear
+                        </button>
+                    </div>
+
+                    <ul className="space-y-2">
+                        {regiones.map((region: any) => (
+                            <li
+                                key={region.id}
+                                className="flex justify-between items-center bg-white dark:bg-[#2c2c2c] p-3 rounded shadow border border-gray-200 dark:border-gray-700"
+                            >
+                                <span className="text-[#393939] dark:text-white">
+                                    {region.nombre}
+                                </span>
+                                <button
+                                    onClick={() => handleEliminar(region.id)}
+                                    className="text-red-500 hover:underline text-sm"
+                                >
+                                    🗑️ Eliminar
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </>
     );

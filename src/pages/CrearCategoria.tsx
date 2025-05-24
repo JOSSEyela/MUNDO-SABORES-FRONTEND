@@ -3,6 +3,7 @@ import axios from '../api/axiosConfig';
 import Navbar from '../pages/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import fondo from '../assets/images/fondo-recetas.jpg'; // Ajusta la ruta si es necesario
 
 const CrearCategoria: React.FC = () => {
     const [categorias, setCategorias] = useState([]);
@@ -52,38 +53,56 @@ const CrearCategoria: React.FC = () => {
         <>
             <Navbar />
             <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-            <div className="p-6 max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold mb-4 text-[#393939] dark:text-white">📁 Gestión de Categorías</h1>
 
-                <div className="flex gap-2 mb-6">
-                    <input
-                        type="text"
-                        value={nuevaCategoria}
-                        onChange={(e) => setNuevaCategoria(e.target.value)}
-                        placeholder="Nueva categoría"
-                        className="px-4 py-2 border rounded w-full dark:bg-[#2b2b2b] dark:text-white dark:border-gray-600"
+            {/* Fondo decorativo */}
+            <div className="relative min-h-screen bg-gradient-to-br from-[#fefcec] via-[#e6f4f1] to-[#d7e4dc] dark:from-[#1e1e1e] dark:via-[#2a2a2a] dark:to-[#161616] px-6 py-10">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src={fondo}
+                        alt="fondo categorías"
+                        className="w-full h-full object-cover opacity-20 blur-sm"
                     />
-                    <button
-                        onClick={handleCrear}
-                        className="bg-coral text-white px-4 py-2 rounded"
-                    >
-                        ➕ Crear
-                    </button>
                 </div>
 
-                <ul className="space-y-2">
-                    {categorias.map((categoria: any) => (
-                        <li key={categoria.id} className="flex justify-between items-center bg-white dark:bg-[#2c2c2c] p-3 rounded shadow">
-                            <span className="text-[#393939] dark:text-white">{categoria.nombre}</span>
-                            <button
-                                onClick={() => handleEliminar(categoria.id)}
-                                className="text-red-500 hover:underline text-sm"
+                {/* Contenido */}
+                <div className="relative z-10 p-6 max-w-4xl mx-auto bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md">
+                    <h1 className="text-2xl font-bold mb-4 text-[#393939] dark:text-white text-center">
+                        📁 Gestión de Categorías
+                    </h1>
+
+                    <div className="flex gap-2 mb-6">
+                        <input
+                            type="text"
+                            value={nuevaCategoria}
+                            onChange={(e) => setNuevaCategoria(e.target.value)}
+                            placeholder="Nueva categoría"
+                            className="px-4 py-2 border rounded w-full dark:bg-[#2b2b2b] dark:text-white dark:border-gray-600"
+                        />
+                        <button
+                            onClick={handleCrear}
+                            className="bg-coral hover:bg-[#dd6a4e] text-white px-4 py-2 rounded transition"
+                        >
+                            ➕ Crear
+                        </button>
+                    </div>
+
+                    <ul className="space-y-2">
+                        {categorias.map((categoria: any) => (
+                            <li
+                                key={categoria.id}
+                                className="flex justify-between items-center bg-gray-50 dark:bg-[#1f1f1f] p-3 rounded shadow-sm border dark:border-gray-700"
                             >
-                                🗑️ Eliminar
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                                <span className="text-[#393939] dark:text-white font-medium">{categoria.nombre}</span>
+                                <button
+                                    onClick={() => handleEliminar(categoria.id)}
+                                    className="text-red-500 hover:underline text-sm"
+                                >
+                                    🗑️ Eliminar
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </>
     );

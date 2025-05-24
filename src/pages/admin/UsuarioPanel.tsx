@@ -4,6 +4,7 @@ import api, { BACKEND_URL } from '../../api/axiosConfig';
 import Navbar from '../Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import fondo from '../../assets/images/fondo-recetas.jpg'; // Fondo reutilizado
 
 interface Usuario {
     id: number;
@@ -54,9 +55,7 @@ const UsuarioPanel: React.FC = () => {
     }, []);
 
     const usuariosFiltrados = usuarios.filter((u) =>
-        `${u.username} ${u.email} ${u.nombres ?? ''} ${u.apellidos ?? ''}`
-            .toLowerCase()
-            .includes(filtro.toLowerCase())
+        `${u.username} ${u.email} ${u.nombres ?? ''} ${u.apellidos ?? ''}`.toLowerCase().includes(filtro.toLowerCase())
     );
 
     const columnas = [
@@ -64,11 +63,7 @@ const UsuarioPanel: React.FC = () => {
             name: '🖼️',
             cell: (row: Usuario) => (
                 <img
-                    src={
-                        row.avatarUrl
-                            ? `${BACKEND_URL}${row.avatarUrl}`
-                            : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
-                    }
+                    src={row.avatarUrl ? `${BACKEND_URL}${row.avatarUrl}` : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
                     alt="avatar"
                     className="w-10 h-10 rounded-full object-cover border"
                 />
@@ -132,53 +127,65 @@ const UsuarioPanel: React.FC = () => {
         <>
             <Navbar />
             <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
-            <div className="min-h-screen bg-gradient-to-br from-[#fefcec] via-white to-[#fefcec] dark:from-[#1a1a1a] dark:via-[#111] dark:to-[#1a1a1a] p-6 space-y-6 transition-colors">
-                <h2 className="text-2xl font-semibold text-[#393939] dark:text-white">Gestión de Usuarios</h2>
-
-                <input
-                    type="text"
-                    placeholder="Buscar por usuario, email o nombre..."
-                    value={filtro}
-                    onChange={(e) => setFiltro(e.target.value)}
-                    className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#eb8369] dark:bg-[#2b2b2b] dark:text-white dark:border-gray-600"
-                />
-
-                <div className="rounded-lg overflow-hidden border border-[#dbdbd0] dark:border-gray-700 bg-white dark:bg-[#2b2b2b] shadow transition">
-                    <DataTable
-                        columns={columnas}
-                        data={usuariosFiltrados}
-                        pagination
-                        highlightOnHover
-                        striped
-                        responsive
-                        noDataComponent={
-                            <div className="text-gray-500 py-4 text-center dark:text-gray-400">
-                                No hay usuarios registrados.
-                            </div>
-                        }
-                        customStyles={{
-                            headCells: {
-                                style: {
-                                    backgroundColor: '#FEFCEC',
-                                    color: '#393939',
-                                    fontWeight: '600',
-                                },
-                            },
-                            rows: {
-                                style: {
-                                    fontSize: '14px',
-                                    color: '#393939',
-                                },
-                            },
-                            pagination: {
-                                style: {
-                                    backgroundColor: '#fff',
-                                    borderTop: '1px solid #DBDBD0',
-                                    padding: '12px',
-                                },
-                            },
-                        }}
+            <div className="relative min-h-screen bg-gradient-to-br from-[#fefcec] via-white to-[#fefcec] dark:from-[#1a1a1a] dark:via-[#111] dark:to-[#1a1a1a] transition-colors">
+                <div className="absolute inset-0 -z-10">
+                    <img
+                        src={fondo}
+                        alt="fondo usuarios"
+                        className="w-full h-full object-cover opacity-20 blur-sm"
                     />
+                </div>
+
+                <div className="relative z-10 p-6 space-y-6 max-w-7xl mx-auto">
+                    <h2 className="text-2xl font-semibold text-[#393939] dark:text-white">
+                        Gestión de Usuarios
+                    </h2>
+
+                    <input
+                        type="text"
+                        placeholder="Buscar por usuario, email o nombre..."
+                        value={filtro}
+                        onChange={(e) => setFiltro(e.target.value)}
+                        className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#eb8369] dark:bg-[#2b2b2b] dark:text-white dark:border-gray-600"
+                    />
+
+                    <div className="rounded-lg overflow-hidden border border-[#dbdbd0] dark:border-gray-700 bg-white dark:bg-[#2b2b2b] shadow transition">
+                        <DataTable
+                            columns={columnas}
+                            data={usuariosFiltrados}
+                            pagination
+                            highlightOnHover
+                            striped
+                            responsive
+                            noDataComponent={
+                                <div className="text-gray-500 py-4 text-center dark:text-gray-400">
+                                    No hay usuarios registrados.
+                                </div>
+                            }
+                            customStyles={{
+                                headCells: {
+                                    style: {
+                                        backgroundColor: '#FEFCEC',
+                                        color: '#393939',
+                                        fontWeight: '600',
+                                    },
+                                },
+                                rows: {
+                                    style: {
+                                        fontSize: '14px',
+                                        color: '#393939',
+                                    },
+                                },
+                                pagination: {
+                                    style: {
+                                        backgroundColor: '#fff',
+                                        borderTop: '1px solid #DBDBD0',
+                                        padding: '12px',
+                                    },
+                                },
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </>

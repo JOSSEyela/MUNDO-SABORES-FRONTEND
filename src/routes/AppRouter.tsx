@@ -21,6 +21,7 @@ import UsuarioPanel from '../pages/admin/UsuarioPanel';
 
 import PrivateRoute from './PrivateRoute';
 import RegionesPanel from '../pages/admin/RegionesPanel';
+import EditarProducto from '../pages/user/EditarProducto';
 
 const AppRouter: React.FC = () => {
   return (
@@ -87,6 +88,14 @@ const AppRouter: React.FC = () => {
         element={
           <PrivateRoute role="user">
             <MisProductos />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/editar-producto/:id"
+        element={
+          <PrivateRoute role={['user', 'admin']}>
+            <EditarProducto />
           </PrivateRoute>
         }
       />
