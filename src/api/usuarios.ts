@@ -1,5 +1,3 @@
-// src/api/usuarios.ts
-
 import api from './axiosConfig';
 
 // Obtener todos los usuarios (solo para admin)
@@ -25,5 +23,5 @@ export const uploadAvatar = async (id: number, file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
     const response = await api.post(`/usuarios/avatar/${id}`, formData);
-    return response.data.avatarUrl; // Asegúrate de que el backend devuelva este campo
+    return response.data.avatarUrl; 
 };

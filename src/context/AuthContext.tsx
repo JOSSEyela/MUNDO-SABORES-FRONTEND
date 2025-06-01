@@ -13,6 +13,7 @@ interface AuthUser {
     username: string;
     role: string;
     avatarUrl?: string;
+    token: string;
 }
 
 interface AuthContextType {
@@ -48,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         username: payload.username,
                         role: payload.rol,
                         avatarUrl: storedAvatar || undefined,
+                        token, // ✅ Token ahora incluido
                     });
                 }
             } catch {
@@ -69,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             username: payload.username,
             role: payload.rol,
             avatarUrl: localStorage.getItem('avatarUrl') || undefined,
+            token, // ✅ Incluido al iniciar sesión
         });
     };
 

@@ -11,17 +11,17 @@ import MisRecetas from '../pages/user/MisRecetas';
 import UserDashboard from '../pages/user/UserDashboard';
 import CrearProducto from '../pages/user/CrearProducto';
 import MisProductos from '../pages/MisProductos';
+import EditarProducto from '../pages/user/EditarProducto';
 import Perfil from '../pages/Perfil';
 
 import CrearCategoria from '../pages/CrearCategoria';
 import AdminProductos from '../pages/admin/AdminProductos';
 import RecetaPanel from '../pages/admin/RecetasPanel';
 import UsuarioPanel from '../pages/admin/UsuarioPanel';
-
+import RegionesPanel from '../pages/admin/RegionesPanel';
 
 import PrivateRoute from './PrivateRoute';
-import RegionesPanel from '../pages/admin/RegionesPanel';
-import EditarProducto from '../pages/user/EditarProducto';
+import RecetaDetalle from '../pages/RecetaDetalle';
 
 const AppRouter: React.FC = () => {
   return (
@@ -31,6 +31,16 @@ const AppRouter: React.FC = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
+      {/* Ruta protegida compartida: Ver detalle de receta (con comentarios) */}
+      <Route
+        path="/recetas/:id"
+        element={
+          <PrivateRoute role={['user', 'admin']}>
+            <RecetaDetalle />
+          </PrivateRoute>
+        }
+      />
 
       {/* Rutas protegidas para usuarios */}
       <Route
@@ -74,7 +84,7 @@ const AppRouter: React.FC = () => {
         }
       />
 
-      {/* Rutas de productos para usuarios */}
+      {/* Rutas protegidas para productos (usuarios) */}
       <Route
         path="/crear-producto"
         element={
@@ -100,7 +110,7 @@ const AppRouter: React.FC = () => {
         }
       />
 
-      {/* Rutas protegidas para admin */}
+      {/* Rutas protegidas para administradores */}
       <Route
         path="/admin"
         element={
@@ -146,7 +156,7 @@ const AppRouter: React.FC = () => {
       <Route
         path="*"
         element={
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', padding: '3rem' }}>
             <h1>404 - Página no encontrada</h1>
           </div>
         }

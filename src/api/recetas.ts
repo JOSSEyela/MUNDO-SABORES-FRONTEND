@@ -6,17 +6,13 @@ export const getRecetasAprobadas = async () => {
     return response.data;
 };
 
-// Crear una nueva receta
-export const crearReceta = async (receta: {
-    title: string;
-    description: string;
-    ingredients: string;
-    instructions: string;
-    region: string;
-    categoriaId: number;
-    
-}) => {
-    const response = await api.post('/recetas', receta);
+// Crear una nueva receta con imagen
+export const crearReceta = async (formData: FormData) => {
+    const response = await api.post('/recetas', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data;
 };
 
@@ -31,7 +27,7 @@ export const eliminarReceta = async (id: number) => {
     await api.delete(`/recetas/${id}`);
 };
 
-// Obtener una receta por ID (para editar, por ejemplo)
+// Obtener una receta por ID (para editar o ver detalle)
 export const getRecetaById = async (id: number) => {
     const response = await api.get(`/recetas/${id}`);
     return response.data;
@@ -53,3 +49,22 @@ export const actualizarReceta = async (
     const response = await api.put(`/recetas/${id}`, data);
     return response.data;
 };
+
+// Obtener calificación del usuario actual para una receta
+export const getCalificacionUsuario = async (recetaId: number) => {
+    const response = await api.get(`/recetas/${recetaId}/calificacion-usuario`);
+    return response.data;
+};
+
+// Calificar una receta
+export const calificarReceta = async (recetaId: number, calificacion: number) => {
+    const response = await api.patch(`/recetas/${recetaId}/calificar`, { calificacion });
+    return response.data;
+};
+
+// Obtener la cantidad total de usuarios que han calificado una receta
+export const getTotalCalificadores = async (recetaId: number): Promise<number> => {
+    const response = await api.get(`/recetas/${recetaId}/total-calificadores`);
+    return response.data.total;
+};
+
