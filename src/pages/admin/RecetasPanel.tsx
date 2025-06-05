@@ -4,25 +4,28 @@ import { useAuth } from '../../context/AuthContext';
 import {
     getRecetasNoAprobadas,
     aprobarReceta,
-    eliminarReceta
+    eliminarReceta,
 } from '../../api/adminRecetas';
 import {
     getProductosAprobados,
     getProductosNoAprobados,
     aprobarProducto,
-    eliminarProducto
+    eliminarProducto,
 } from '../../api/productos';
 import { getRecetasAprobadas } from '../../api/recetas';
 import Navbar from '../Navbar';
 import fondoRecetas from '../../assets/images/fondo-recetas.jpg';
 import { toast } from 'react-toastify';
 import { BACKEND_URL } from '../../api/axiosConfig';
+import MapaGeneral from '../../components/MapaGeneral';
 
 interface Receta {
     id: number;
     title: string;
     description: string;
     imagenUrl?: string;
+    latitud?: number;
+    longitud?: number;
     usuario?: { username: string };
     categoria?: { nombre: string };
 }
@@ -54,7 +57,7 @@ const RecetasPanel: React.FC = () => {
                 getRecetasNoAprobadas(),
                 getRecetasAprobadas(),
                 getProductosAprobados(),
-                getProductosNoAprobados()
+                getProductosNoAprobados(),
             ]);
             setRecetasPendientes(pendientes);
             setRecetasAprobadas(aprobadas);
@@ -132,7 +135,7 @@ const RecetasPanel: React.FC = () => {
     const renderRecetaCard = (receta: Receta, isPendiente: boolean) => (
         <div
             key={receta.id}
-            className="bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 space-y-2 transition-all hover:shadow-lg cursor-pointer"
+            className="bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 space-y-2 hover:shadow-lg transition"
             onClick={() => navigate(`/recetas/${receta.id}`)}
         >
             {receta.imagenUrl && (
@@ -147,41 +150,16 @@ const RecetasPanel: React.FC = () => {
             <p className="text-sm text-gray-700 dark:text-gray-300"><strong>Categoría:</strong> {receta.categoria?.nombre ?? 'Sin categoría'}</p>
             <p className="text-sm text-gray-600 dark:text-gray-400">{receta.description?.slice(0, 100)}...</p>
             <div className="flex gap-2 pt-2 justify-end" onClick={(e) => e.stopPropagation()}>
-                <button
-                    onClick={() => navigate(`/recetas/${receta.id}`)}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded text-sm"
-                >
-                    👁️ Ver
-                </button>
+                <button onClick={() => navigate(`/recetas/${receta.id}`)} className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded text-sm">👁️ Ver</button>
                 {isPendiente ? (
                     <>
-                        <button
-                            onClick={() => handleAprobar(receta.id)}
-                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            ✅ Aprobar
-                        </button>
-                        <button
-                            onClick={() => handleEliminar(receta.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            🗑️ Eliminar
-                        </button>
+                        <button onClick={() => handleAprobar(receta.id)} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm">✅ Aprobar</button>
+                        <button onClick={() => handleEliminar(receta.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">🗑️ Eliminar</button>
                     </>
                 ) : (
                     <>
-                        <button
-                            onClick={() => navigate(`/editar/${receta.id}`)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            ✏️ Editar
-                        </button>
-                        <button
-                            onClick={() => handleEliminar(receta.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            🗑️ Eliminar
-                        </button>
+                        <button onClick={() => navigate(`/editar/${receta.id}`)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm">✏️ Editar</button>
+                        <button onClick={() => handleEliminar(receta.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">🗑️ Eliminar</button>
                     </>
                 )}
             </div>
@@ -189,10 +167,7 @@ const RecetasPanel: React.FC = () => {
     );
 
     const renderProductoCard = (producto: Producto, isPendiente: boolean) => (
-        <div
-            key={producto.id}
-            className="bg-white dark:bg-[#2c2c2c] border-l-4 border-yellow-400 dark:border-yellow-500 rounded-xl shadow-md p-5 space-y-3 hover:shadow-lg"
-        >
+        <div key={producto.id} className="bg-white dark:bg-[#2c2c2c] border-l-4 border-yellow-400 dark:border-yellow-500 rounded-xl shadow-md p-5 space-y-3 hover:shadow-lg">
             <h3 className="text-xl font-bold text-[#393939] dark:text-white">🛍️ {producto.name}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-300"><strong>Usuario:</strong> {producto.usuario?.username ?? 'Desconocido'}</p>
             <p className="text-sm text-gray-600 dark:text-gray-300"><strong>Categoría:</strong> {producto.categoria?.nombre ?? 'Sin categoría'}</p>
@@ -202,33 +177,13 @@ const RecetasPanel: React.FC = () => {
             <div className="flex flex-wrap gap-2 justify-end pt-2">
                 {isPendiente ? (
                     <>
-                        <button
-                            onClick={() => handleAprobarProducto(producto.id)}
-                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            ✅ Aprobar
-                        </button>
-                        <button
-                            onClick={() => handleEliminarProducto(producto.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            🗑️ Eliminar
-                        </button>
+                        <button onClick={() => handleAprobarProducto(producto.id)} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm">✅ Aprobar</button>
+                        <button onClick={() => handleEliminarProducto(producto.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">🗑️ Eliminar</button>
                     </>
                 ) : (
                     <>
-                        <button
-                            onClick={() => navigate(`/editar-producto/${producto.id}`)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            ✏️ Editar
-                        </button>
-                        <button
-                            onClick={() => handleEliminarProducto(producto.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm"
-                        >
-                            🗑️ Eliminar
-                        </button>
+                        <button onClick={() => navigate(`/editar-producto/${producto.id}`)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm">✏️ Editar</button>
+                        <button onClick={() => handleEliminarProducto(producto.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">🗑️ Eliminar</button>
                     </>
                 )}
             </div>
@@ -240,34 +195,42 @@ const RecetasPanel: React.FC = () => {
             <Navbar />
             <div className="relative min-h-screen bg-ivory dark:bg-[#1e1e1e]">
                 <div className="absolute inset-0 z-0">
-                    <img
-                        src={fondoRecetas}
-                        alt="fondo recetas"
-                        className="w-full h-full object-cover opacity-20 blur-sm"
-                    />
+                    <img src={fondoRecetas} alt="fondo recetas" className="w-full h-full object-cover opacity-20 blur-sm" />
                 </div>
-
                 <div className="relative z-10 p-6 sm:p-10 space-y-12">
                     <div className="flex justify-end">
-                        <button
-                            className="bg-coral hover:bg-peach text-white px-4 py-2 rounded shadow-sm text-sm"
-                            onClick={() => navigate('/crear')}
-                        >
+                        <button className="bg-coral hover:bg-peach text-white px-4 py-2 rounded shadow-sm text-sm" onClick={() => navigate('/crear')}>
                             ➕ Crear nueva receta
                         </button>
                     </div>
+
+                    {recetasAprobadas.some(r => r.latitud && r.longitud) && (
+                        <div className="mb-10 bg-white dark:bg-[#2c2c2c] shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                            <h2 className="text-xl font-bold text-[#393939] dark:text-white mb-4">🌍 Mapa de recetas aprobadas</h2>
+                            <MapaGeneral
+                                recetas={recetasAprobadas
+                                    .filter(r => r.latitud && r.longitud)
+                                    .map(r => ({
+                                        id: r.id,
+                                        title: r.title,
+                                        latitud: r.latitud!,
+                                        longitud: r.longitud!,
+                                    }))}
+                            />
+                        </div>
+                    )}
 
                     {isLoading ? (
                         <div className="text-center text-gray-500 dark:text-gray-300 font-medium">Cargando datos...</div>
                     ) : (
                         <>
                             <section>
-                                <h2 className="text-xl font-bold text-[#393939] dark:text-white mb-4">🕒 Recetas pendientes de aprobación</h2>
+                                <h2 className="text-xl font-bold text-[#393939] dark:text-white mb-4">🕒 Recetas pendientes</h2>
                                 {recetasPendientes.length === 0 ? (
                                     <p className="text-center italic text-gray-500 dark:text-gray-400">No hay recetas pendientes.</p>
                                 ) : (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {recetasPendientes.map((r) => renderRecetaCard(r, true))}
+                                        {recetasPendientes.map(r => renderRecetaCard(r, true))}
                                     </div>
                                 )}
                             </section>
@@ -275,37 +238,25 @@ const RecetasPanel: React.FC = () => {
                             <div className="text-center text-[#393939] dark:text-white font-medium">──── ✅ Recetas publicadas ────</div>
 
                             <section>
-                                {recetasAprobadas.length === 0 ? (
-                                    <p className="text-center italic text-gray-500 dark:text-gray-400">No hay recetas publicadas.</p>
-                                ) : (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {recetasAprobadas.map((r) => renderRecetaCard(r, false))}
-                                    </div>
-                                )}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {recetasAprobadas.map(r => renderRecetaCard(r, false))}
+                                </div>
                             </section>
 
                             <div className="text-center text-[#393939] dark:text-white font-medium">──── 🛒 Productos pendientes ────</div>
 
                             <section>
-                                {productosPendientes.length === 0 ? (
-                                    <p className="text-center italic text-gray-500 dark:text-gray-400">No hay productos pendientes.</p>
-                                ) : (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {productosPendientes.map((p) => renderProductoCard(p, true))}
-                                    </div>
-                                )}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {productosPendientes.map(p => renderProductoCard(p, true))}
+                                </div>
                             </section>
 
                             <div className="text-center text-[#393939] dark:text-white font-medium">──── ✅ Productos publicados ────</div>
 
                             <section>
-                                {productosAprobados.length === 0 ? (
-                                    <p className="text-center italic text-gray-500 dark:text-gray-400">No hay productos publicados.</p>
-                                ) : (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {productosAprobados.map((p) => renderProductoCard(p, false))}
-                                    </div>
-                                )}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {productosAprobados.map(p => renderProductoCard(p, false))}
+                                </div>
                             </section>
                         </>
                     )}

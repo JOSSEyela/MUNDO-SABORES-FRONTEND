@@ -16,6 +16,7 @@ import Navbar from './Navbar';
 import StarRatings from 'react-star-ratings';
 import { BACKEND_URL } from '../api/axiosConfig';
 import { toast } from 'react-toastify';
+import MapaReceta from '../components/MapaReceta';
 
 interface Comentario {
     id: number;
@@ -143,6 +144,14 @@ const RecetaDetalle: React.FC = () => {
                             {receta.instructions}
                         </div>
                     </div>
+
+                    {/* Mapa con ubicación */}
+                    {receta.latitud && receta.longitud && (
+                        <div className="mt-6">
+                            <h2 className="text-lg font-semibold mb-2 text-[#393939] dark:text-white">📍 Ubicación en el mapa</h2>
+                            <MapaReceta lat={receta.latitud} lng={receta.longitud} title={receta.title} />
+                        </div>
+                    )}
 
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-md mt-6">
                         <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-300 mb-2">⭐ Califica esta receta</h3>

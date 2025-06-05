@@ -1,0 +1,52 @@
+import React from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// IMPORTACIONES COMPATIBLES
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// AJUSTAR ÍCONOS DE LEAFLET
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+});
+
+interface Props {
+    recetas: {
+        id: number;
+        title: string;
+        latitud: number;
+        longitud: number;
+    }[];
+}
+
+const MapaGeneral: React.FC<Props> = ({ recetas }) => {
+    const centroInicial = recetas.length
+        ? [recetas[0].latitud, recetas[0].longitud]
+        : [1.0, -76.0]; // Ubicación por defecto
+
+    return (
+        <div style={{ height: '400px', width: '100%', borderRadius: '12px', overflow: 'hidden' }}>
+            <MapContainer center={centroInicial as [number, number]} zoom={6} scrollWheelZoom style={{ height: '100%', width: '100%' }}>
+                <TileLayer
+                    attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                />
+                {recetas.map((receta) => (
+                    <Marker key={receta.id} position={[receta.latitud, receta.longitud]}>
+                        <Popup>
+                            <strong>{receta.title}</strong>
+                        </Popup>
+                    </Marker>
+                ))}
+            </MapContainer>
+        </div>
+    );
+};
+
+export default MapaGeneral;

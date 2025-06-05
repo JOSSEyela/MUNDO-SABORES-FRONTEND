@@ -7,6 +7,7 @@ import Navbar from '../pages/Navbar';
 import { useAuth } from '../context/AuthContext';
 import fondoRecetas from '../assets/images/fondo-recetas.jpg';
 import { toast } from 'react-toastify';
+import MapaSelector from '../components/MapaSelector';
 
 const CrearReceta: React.FC = () => {
     const navigate = useNavigate();
@@ -24,7 +25,9 @@ const CrearReceta: React.FC = () => {
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // ⚠️ Advertencia si hay datos sin guardar
+    const [latitud, setLatitud] = useState<number>(1.2089);     // Mocoa por defecto
+    const [longitud, setLongitud] = useState<number>(-76.6743);
+
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (title || description || ingredients || instructions || imagen) {
@@ -76,16 +79,17 @@ const CrearReceta: React.FC = () => {
         formData.append('instructions', instructions);
         formData.append('regionId', String(regionId));
         formData.append('categoriaId', String(categoriaId));
+        formData.append('latitud', String(latitud));
+        formData.append('longitud', String(longitud));
         if (imagen) formData.append('imagen', imagen);
 
         try {
             await crearReceta(formData);
             toast.success(
                 user?.role === 'admin'
-                    ? '✅ Receta creada y publicada exitosamente'
-                    : '✅ Receta enviada para aprobación'
+                    ? ' Receta creada y publicada exitosamente'
+                    : ' Receta enviada para aprobación'
             );
-            // Limpiar formulario si no es admin
             if (user?.role !== 'admin') {
                 setTitle('');
                 setDescription('');
@@ -96,7 +100,7 @@ const CrearReceta: React.FC = () => {
             navigate(user?.role === 'admin' ? '/admin' : '/user');
         } catch (err) {
             console.error(err);
-            setError('❌ Error al crear la receta. Verifica los campos.');
+            setError(' Error al crear la receta. Verifica los campos.');
         } finally {
             setIsSubmitting(false);
         }
@@ -130,18 +134,17 @@ const CrearReceta: React.FC = () => {
                             </p>
                         )}
 
-                        {/* Sección: Información general */}
+                        {/* Información general */}
                         <div className="space-y-4">
                             <h3 className="text-xl font-semibold text-[#393939] dark:text-white">Información general</h3>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-white">Título</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-white">Título</label>
                                 <input
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     placeholder="Ej: Sancocho de gallina"
-                                    title="Nombre del plato"
                                     className={`w-full px-4 py-2 border rounded-md dark:bg-gray-800 dark:text-white shadow-sm focus:ring-2 focus:ring-coral ${
                                         !title && error ? 'border-red-500' : ''
                                     }`}
@@ -149,12 +152,11 @@ const CrearReceta: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-white">Descripción</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-white">Descripción</label>
                                 <textarea
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                     placeholder="Breve historia o contexto del plato"
-                                    title="Puedes contar el origen de la receta"
                                     className={`w-full px-4 py-2 border rounded-md dark:bg-gray-800 dark:text-white shadow-sm resize-none focus:ring-2 focus:ring-coral ${
                                         !description && error ? 'border-red-500' : ''
                                     }`}
@@ -163,17 +165,16 @@ const CrearReceta: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Sección: Contenido */}
+                        {/* Ingredientes e instrucciones */}
                         <div className="space-y-4">
                             <h3 className="text-xl font-semibold text-[#393939] dark:text-white">Contenido</h3>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-white">Ingredientes</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-white">Ingredientes</label>
                                 <textarea
                                     value={ingredients}
                                     onChange={(e) => setIngredients(e.target.value)}
                                     placeholder="Lista de ingredientes separados por coma"
-                                    title="Ej: arroz, agua, sal"
                                     className={`w-full px-4 py-2 border rounded-md dark:bg-gray-800 dark:text-white shadow-sm resize-none focus:ring-2 focus:ring-coral ${
                                         !ingredients && error ? 'border-red-500' : ''
                                     }`}
@@ -182,12 +183,11 @@ const CrearReceta: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block font-medium text-sm text-gray-700 dark:text-white">Instrucciones</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-white">Instrucciones</label>
                                 <textarea
                                     value={instructions}
                                     onChange={(e) => setInstructions(e.target.value)}
                                     placeholder="Pasos detallados para la preparación"
-                                    title="Escribe cada paso de la preparación"
                                     className={`w-full px-4 py-2 border rounded-md dark:bg-gray-800 dark:text-white shadow-sm resize-none focus:ring-2 focus:ring-coral ${
                                         !instructions && error ? 'border-red-500' : ''
                                     }`}
@@ -196,7 +196,7 @@ const CrearReceta: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Sección: Clasificación */}
+                        {/* Clasificación y Mapa */}
                         <div className="space-y-4">
                             <h3 className="text-xl font-semibold text-[#393939] dark:text-white">Clasificación</h3>
 
@@ -229,9 +229,25 @@ const CrearReceta: React.FC = () => {
                                     ))}
                                 </select>
                             </div>
+
+                            <div className="space-y-2">
+                                <h3 className="text-lg font-semibold text-[#393939] dark:text-white">Ubicación</h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Haz clic en el mapa para seleccionar la ubicación geográfica de esta receta.</p>
+                                <MapaSelector
+                                    lat={latitud}
+                                    lng={longitud}
+                                    onChange={(lat, lng) => {
+                                        setLatitud(lat);
+                                        setLongitud(lng);
+                                    }}
+                                />
+                                <p className="text-xs text-gray-500 dark:text-gray-400 pt-1">
+                                    Latitud: {latitud.toFixed(5)} | Longitud: {longitud.toFixed(5)}
+                                </p>
+                            </div>
                         </div>
 
-                        {/* Imagen y vista previa */}
+                        {/* Imagen */}
                         <div>
                             <label className="block font-medium text-sm text-gray-700 dark:text-white">Imagen de la Receta</label>
                             <input
@@ -254,7 +270,6 @@ const CrearReceta: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Botón de envío */}
                         <div className="flex justify-center pt-4">
                             <button
                                 type="submit"

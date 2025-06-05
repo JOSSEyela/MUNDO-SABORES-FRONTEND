@@ -4,17 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import {
     getRecetasAprobadas,
     getMisRecetas,
-    eliminarReceta
+    eliminarReceta,
 } from '../../api/recetas';
 import { getProductosAprobados } from '../../api/productos';
 import Navbar from '../../pages/Navbar';
+import MapaGeneral from '../../components/MapaGeneral';
 
 const UserDashboard: React.FC = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [recetas, setRecetas] = useState([]);
-    const [misRecetas, setMisRecetas] = useState([]);
-    const [productos, setProductos] = useState([]);
+    const [recetas, setRecetas] = useState<any[]>([]);
+    const [misRecetas, setMisRecetas] = useState<any[]>([]);
+    const [productos, setProductos] = useState<any[]>([]);
     const [error, setError] = useState('');
 
     const cargarDatos = async () => {
@@ -22,7 +23,7 @@ const UserDashboard: React.FC = () => {
             const [aprobadas, mias, aprobados] = await Promise.all([
                 getRecetasAprobadas(),
                 getMisRecetas(),
-                getProductosAprobados()
+                getProductosAprobados(),
             ]);
             setRecetas(aprobadas);
             setMisRecetas(mias);
@@ -74,8 +75,8 @@ const UserDashboard: React.FC = () => {
                             {receta.promedioCalificacion >= i + 1
                                 ? '★'
                                 : receta.promedioCalificacion >= i + 0.5
-                                ? '⯪'
-                                : '☆'}
+                                    ? '⯪'
+                                    : '☆'}
                         </span>
                     ))}
                     <span className="text-xs text-gray-600 dark:text-gray-400">
@@ -86,6 +87,7 @@ const UserDashboard: React.FC = () => {
                     <strong>Categoría:</strong> {receta.categoria?.nombre || 'Sin categoría'}
                 </p>
                 <p className="text-sm text-gray-700 dark:text-gray-400">{receta.description?.slice(0, 100)}...</p>
+
                 {isPropia && !receta.aprobado && (
                     <div className="pt-3 flex gap-2 justify-end" onClick={(e) => e.stopPropagation()}>
                         <button
@@ -124,6 +126,30 @@ const UserDashboard: React.FC = () => {
                     </div>
 
                     {error && <p className="text-red-600 dark:text-red-400 mb-6">{error}</p>}
+
+                    {recetas.some(r => r.latitud && r.longitud && r.title) && (
+                        <section className="mb-14 flex justify-center">
+                            <div className="w-full max-w-4xl bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md overflow-hidden">
+                                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <h2 className="text-xl font-semibold text-[#393939] dark:text-white text-center">
+                                        Mapa de Recetas Aprobadas
+                                    </h2>
+                                </div>
+                                <div className="h-[320px] w-full">
+                                    <MapaGeneral
+                                        recetas={recetas
+                                            .filter((r: any) => r.latitud && r.longitud && r.title)
+                                            .map((r: any) => ({
+                                                id: r.id,
+                                                title: r.title,
+                                                latitud: r.latitud,
+                                                longitud: r.longitud,
+                                            }))}
+                                    />
+                                </div>
+                            </div>
+                        </section>
+                    )}
 
                     <section className="mb-14">
                         <h2 className="text-xl font-semibold text-[#393939] dark:text-white mb-4">Recetas Aprobadas Globales</h2>

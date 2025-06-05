@@ -6,7 +6,7 @@ export const getRecetasAprobadas = async () => {
     return response.data;
 };
 
-// Crear una nueva receta con imagen
+// Crear una nueva receta con imagen y ubicación
 export const crearReceta = async (formData: FormData) => {
     const response = await api.post('/recetas', formData, {
         headers: {
@@ -33,7 +33,7 @@ export const getRecetaById = async (id: number) => {
     return response.data;
 };
 
-// Actualizar una receta
+// Actualizar una receta (incluyendo ubicación si aplica)
 export const actualizarReceta = async (
     id: number,
     data: {
@@ -44,6 +44,8 @@ export const actualizarReceta = async (
         region?: string;
         categoriaId?: number;
         usuarioId?: string;
+        latitud?: number;
+        longitud?: number;
     }
 ) => {
     const response = await api.put(`/recetas/${id}`, data);
@@ -67,4 +69,3 @@ export const getTotalCalificadores = async (recetaId: number): Promise<number> =
     const response = await api.get(`/recetas/${recetaId}/total-calificadores`);
     return response.data.total;
 };
-
