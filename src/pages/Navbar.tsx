@@ -1,10 +1,20 @@
-import { Bars3Icon, XMarkIcon, MoonIcon, SunIcon, UserCircleIcon, ArrowLeftOnRectangleIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import {
+  Bars3Icon,
+  XMarkIcon,
+  MoonIcon,
+  SunIcon,
+  UserCircleIcon,
+  ArrowLeftOnRectangleIcon,
+  ChevronRightIcon,
+  ShoppingCartIcon,
+} from '@heroicons/react/24/solid';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { BACKEND_URL } from '../api/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from '../api/axiosConfig';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -13,9 +23,12 @@ const Navbar: React.FC = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
   const [avatarTimestamp, setAvatarTimestamp] = useState(Date.now());
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
   const profileRef = useRef<HTMLDivElement>(null);
+  const cartRef = useRef<HTMLDivElement>(null);
 
   if (!user) return null;
 
@@ -23,6 +36,9 @@ const Navbar: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
+      }
+      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+        setCartOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -38,28 +54,25 @@ const Navbar: React.FC = () => {
     setAvatarTimestamp(Date.now());
   }, [user.avatarUrl]);
 
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get('/cart');
+        setCartItems(response.data.items);
+      } catch (error) {
+        console.error('Error al cargar el carrito', error);
+      }
+    };
+
+    if (!user?.role?.includes('admin')) {
+      fetchCartItems();
+    }
+  }, [user]);
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-
-  const routes = user.role === 'admin'
-    ? [
-      { label: 'Inicio Admin', to: '/admin' },
-      { label: 'Crear Receta', to: '/crear' },
-      { label: 'Crear Categoría', to: '/crear-categoria' },
-      { label: 'Gestión de Usuarios', to: '/admin/usuarios' },
-      { label: 'Aprobar Productos', to: '/admin-productos' },
-      { label: 'Crear Producto', to: '/crear-producto' },
-      { label: 'Gestión de Regiones', to: '/admin/regiones' },
-    ]
-    : [
-      { label: 'Inicio', to: '/user' },
-      { label: 'Crear Receta', to: '/crear' },
-      { label: 'Mis Recetas', to: '/mis-recetas' },
-      { label: 'Crear Producto', to: '/crear-producto' },
-      { label: 'Mis Productos', to: '/mis-productos' },
-    ];
 
   const avatarUrl = user.avatarUrl
     ? `${BACKEND_URL}${user.avatarUrl}?t=${avatarTimestamp}`
@@ -78,38 +91,13 @@ const Navbar: React.FC = () => {
     <header className="relative z-50 bg-white dark:bg-[#1e1e1e] border-b border-gray-300 shadow-sm px-4 sm:px-6 py-3 transition-colors duration-300">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Abrir menú"
-              className="btn btn-sm btn-ghost text-[#393939] dark:text-white transition-all duration-300 hover:scale-105"
-            >
-              {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
-            </button>
-
-            <AnimatePresence>
-              {menuOpen && (
-                <motion.ul
-                  initial={{ x: -200, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: -200, opacity: 0 }}
-                  className="absolute left-0 mt-2 w-64 bg-white dark:bg-[#2b2b2b] border shadow-xl rounded-xl py-2 z-50 space-y-1"
-                >
-                  {routes.map((item, idx) => (
-                    <li key={idx}>
-                      <Link
-                        to={item.to}
-                        onClick={() => setMenuOpen(false)}
-                        className={`block px-4 py-2 text-sm text-[#393939] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ${location.pathname === item.to ? 'font-semibold border-l-4 border-[#eb8369] bg-gray-100 dark:bg-gray-800' : ''}`}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </motion.ul>
-              )}
-            </AnimatePresence>
-          </div>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Abrir menú"
+            className="btn btn-sm btn-ghost text-[#393939] dark:text-white transition-all duration-300 hover:scale-105"
+          >
+            {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
+          </button>
 
           <div
             className="flex items-center gap-2 cursor-pointer"
@@ -117,7 +105,9 @@ const Navbar: React.FC = () => {
           >
             <img src={logo} alt="Logo de la app" className="h-12 w-auto" />
             <div>
-              <span className="text-xl font-serif font-bold text-[#393939] dark:text-white tracking-tight block">Un Mundo de Sabores</span>
+              <span className="text-xl font-serif font-bold text-[#393939] dark:text-white tracking-tight block">
+                Un Mundo de Sabores
+              </span>
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 {user.role === 'admin' ? 'Panel Admin' : 'Panel Usuario'}
               </span>
@@ -126,6 +116,47 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          {!user?.role?.includes('admin') && (
+            <div className="relative" ref={cartRef}>
+              <button
+                onClick={() => setCartOpen(!cartOpen)}
+                className="text-[#393939] dark:text-white hover:text-[#eb8369] dark:hover:text-[#eb8369]"
+                title="Ver carrito"
+              >
+                <ShoppingCartIcon className="w-6 h-6" />
+              </button>
+              <AnimatePresence>
+                {cartOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#2b2b2b] border shadow-xl rounded-xl p-4 z-50"
+                  >
+                    <h2 className="text-sm font-bold mb-2 text-[#393939] dark:text-white">Productos en el carrito</h2>
+                    {cartItems.length === 0 ? (
+                      <p className="text-sm text-gray-500">Tu carrito está vacío.</p>
+                    ) : (
+                      <ul className="max-h-52 overflow-y-auto space-y-1">
+                        {cartItems.map((item: any, idx: number) => (
+                          <li key={idx} className="text-sm text-[#393939] dark:text-gray-200">
+                            - {item.producto.nombre} (x{item.quantity})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <button
+                      onClick={() => navigate('/carrito')}
+                      className="mt-4 w-full bg-[#eb8369] text-white py-1.5 rounded hover:bg-[#d56c55] transition-all"
+                    >
+                      Ir al carrito
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="transition transform hover:rotate-180 duration-500 text-[#393939] dark:text-white hover:text-[#eb8369] dark:hover:text-[#eb8369]"

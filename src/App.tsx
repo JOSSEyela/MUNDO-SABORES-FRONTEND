@@ -4,24 +4,27 @@ import AppRouter from './routes/AppRouter';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'leaflet/dist/leaflet.css'; 
+import { CartProvider } from './context/CartContext';
 
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-[#fefcec] text-[#393939] dark:bg-[#121212] dark:text-white transition-colors duration-300">
-        <AppRouter />
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-      </div>
+      <CartProvider>
+        <div className="min-h-screen bg-[#fefcec] text-[#393939] dark:bg-[#121212] dark:text-white transition-colors duration-300">
+          <AppRouter />
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </div>
+      </CartProvider>
     </Router>
   );
 };

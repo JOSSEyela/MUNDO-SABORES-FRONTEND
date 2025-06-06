@@ -22,6 +22,7 @@ import RegionesPanel from '../pages/admin/RegionesPanel';
 
 import PrivateRoute from './PrivateRoute';
 import RecetaDetalle from '../pages/RecetaDetalle';
+import CarritoPage from '../pages/CarritoPage';
 
 const AppRouter: React.FC = () => {
   return (
@@ -151,6 +152,16 @@ const AppRouter: React.FC = () => {
           </PrivateRoute>
         }
       />
+
+      <Route
+        path="/carrito"
+        element={
+          <PrivateRoute role="user">
+            <CarritoPage />
+          </PrivateRoute>
+        }
+      />
+
 
       {/* Ruta 404 */}
       <Route
