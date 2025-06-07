@@ -9,9 +9,13 @@ import {
 import { getProductosAprobados } from '../../api/productos';
 import Navbar from '../../pages/Navbar';
 import MapaGeneral from '../../components/MapaGeneral';
+import { useCart } from '../../context/CartContext';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserDashboard: React.FC = () => {
     const { user } = useAuth();
+    const { addToCart } = useCart();
     const navigate = useNavigate();
     const [recetas, setRecetas] = useState<any[]>([]);
     const [misRecetas, setMisRecetas] = useState<any[]>([]);
@@ -49,9 +53,18 @@ const UserDashboard: React.FC = () => {
         }
     };
 
+    const handleAddToCart = async (productoId: number) => {
+        try {
+            await addToCart(productoId, 1);
+            toast.success('Producto agregado al carrito 🛒');
+        } catch (error) {
+            console.error(error);
+            toast.error('Error al agregar al carrito');
+        }
+    };
+
     const TarjetaReceta = ({ receta, isPropia = false }: { receta: any; isPropia?: boolean }) => (
         <div
-            key={receta.id}
             className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg border dark:border-gray-700 overflow-hidden hover:scale-[1.015] transition-transform duration-200 cursor-pointer"
             onClick={() => navigate(`/recetas/${receta.id}`)}
         >
@@ -189,6 +202,14 @@ const UserDashboard: React.FC = () => {
                                         <p className="text-sm text-gray-600 dark:text-gray-300"><strong>Precio:</strong> ${producto.price}</p>
                                         <p className="text-sm text-gray-600 dark:text-gray-300"><strong>Región:</strong> {producto.region?.nombre ?? 'No especificada'}</p>
                                         <p className="text-sm text-gray-700 dark:text-gray-400">{producto.description?.slice(0, 100)}...</p>
+                                        <div className="pt-2 text-right">
+                                            <button
+                                                onClick={() => handleAddToCart(producto.id)}
+                                                className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded text-sm transition-transform hover:scale-105"
+                                            >
+                                                🛒 Agregar al carrito
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

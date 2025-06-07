@@ -18,6 +18,7 @@ import fondoRecetas from '../../assets/images/fondo-recetas.jpg';
 import { toast } from 'react-toastify';
 import { BACKEND_URL } from '../../api/axiosConfig';
 import MapaGeneral from '../../components/MapaGeneral';
+import { useCart } from '../../context/CartContext';
 
 interface Receta {
     id: number;
@@ -48,6 +49,7 @@ const RecetasPanel: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { user } = useAuth();
+    const { addToCart } = useCart();
     const navigate = useNavigate();
 
     const cargarDatos = async () => {
@@ -121,23 +123,8 @@ const RecetasPanel: React.FC = () => {
         }
     };
 
-    if (user?.role !== 'admin') {
-        return (
-            <>
-                <Navbar />
-                <div className="text-center text-red-600 font-semibold p-4 dark:text-red-400">
-                    🚫 Acceso restringido. Este panel solo está disponible para administradores.
-                </div>
-            </>
-        );
-    }
-
     const renderRecetaCard = (receta: Receta, isPendiente: boolean) => (
-        <div
-            key={receta.id}
-            className="bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 space-y-2 hover:shadow-lg transition"
-            onClick={() => navigate(`/recetas/${receta.id}`)}
-        >
+        <div key={receta.id} className="bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-4 space-y-2 hover:shadow-lg transition" onClick={() => navigate(`/recetas/${receta.id}`)}>
             {receta.imagenUrl && (
                 <img
                     src={`${BACKEND_URL}${receta.imagenUrl}`}
@@ -184,11 +171,23 @@ const RecetasPanel: React.FC = () => {
                     <>
                         <button onClick={() => navigate(`/editar-producto/${producto.id}`)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm">✏️ Editar</button>
                         <button onClick={() => handleEliminarProducto(producto.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm">🗑️ Eliminar</button>
+                        <button onClick={() => addToCart(producto.id, 1)} className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded text-sm">🛒 Agregar al carrito</button>
                     </>
                 )}
             </div>
         </div>
     );
+
+    if (user?.role !== 'admin') {
+        return (
+            <>
+                <Navbar />
+                <div className="text-center text-red-600 font-semibold p-4 dark:text-red-400">
+                    🚫 Acceso restringido. Este panel solo está disponible para administradores.
+                </div>
+            </>
+        );
+    }
 
     return (
         <>

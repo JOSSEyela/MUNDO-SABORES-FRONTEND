@@ -6,7 +6,8 @@ import Navbar from '../Navbar';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../context/AuthContext';
-import fondoDecorativo from '../../assets/images/fondo-recetas.jpg'; // Usa tu propia imagen si lo deseas
+import fondoDecorativo from '../../assets/images/fondo-recetas.jpg'; 
+
 
 const EditarProducto: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -18,6 +19,7 @@ const EditarProducto: React.FC = () => {
         description: '',
         price: '',
         regionId: '',
+        stock: '',
     });
     const [regiones, setRegiones] = useState<any[]>([]);
     const [error, setError] = useState('');
@@ -31,6 +33,7 @@ const EditarProducto: React.FC = () => {
                     description: producto.description,
                     price: producto.price.toString(),
                     regionId: producto.region?.id || '',
+                    stock: producto.stock?.toString() || '',
                 });
 
                 const regionesData = await getRegiones();
@@ -52,12 +55,22 @@ const EditarProducto: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        const parsedPrice = parseFloat(formData.price);
+        const parsedStock = parseInt(formData.stock);
+
+        if (parsedPrice <= 0 || parsedStock < 0) {
+            toast.error('Verifica que el precio sea mayor a 0 y el stock no sea negativo');
+            return;
+        }
+
         try {
             await actualizarProducto(Number(id), {
                 name: formData.name,
                 description: formData.description,
-                price: parseFloat(formData.price),
+                price: parsedPrice,
                 regionId: Number(formData.regionId),
+                stock: parsedStock,
             });
 
             toast.success('✅ Producto actualizado exitosamente', {
@@ -69,11 +82,7 @@ const EditarProducto: React.FC = () => {
             });
 
             setTimeout(() => {
-                if (user?.role === 'admin') {
-                    navigate('/admin-productos');
-                } else {
-                    navigate('/mis-productos');
-                }
+                navigate(user?.role === 'admin' ? '/admin-productos' : '/mis-productos');
             }, 1000);
         } catch (err) {
             console.error(err);
@@ -94,8 +103,6 @@ const EditarProducto: React.FC = () => {
             <ToastContainer />
 
             <div className="relative min-h-screen bg-gradient-to-br from-[#fefcec] via-[#e6f4f1] to-[#d7e4dc] dark:from-[#1e1e1e] dark:via-[#2a2a2a] dark:to-[#161616] px-6 py-10">
-
-                {/* Fondo decorativo */}
                 <div className="absolute inset-0 z-0">
                     <img
                         src={fondoDecorativo}
@@ -104,7 +111,6 @@ const EditarProducto: React.FC = () => {
                     />
                 </div>
 
-                {/* Contenido */}
                 <div className="relative z-10 max-w-xl mx-auto bg-white dark:bg-[#2c2c2c] border border-gray-200 dark:border-gray-700 rounded-xl shadow-md p-8">
                     <h2 className="text-2xl font-bold text-[#393939] dark:text-white mb-6 text-center">
                         ✏️ Editar Producto
@@ -113,6 +119,7 @@ const EditarProducto: React.FC = () => {
                     {error && <p className="text-red-600 dark:text-red-400 text-sm mb-4">{error}</p>}
 
                     <form onSubmit={handleSubmit} className="space-y-5">
+                        {/* Nombre */}
                         <div>
                             <label className="block font-medium text-[#393939] dark:text-gray-200">Nombre</label>
                             <input
@@ -125,6 +132,7 @@ const EditarProducto: React.FC = () => {
                             />
                         </div>
 
+                        {/* Descripción */}
                         <div>
                             <label className="block font-medium text-[#393939] dark:text-gray-200">Descripción</label>
                             <textarea
@@ -137,6 +145,7 @@ const EditarProducto: React.FC = () => {
                             />
                         </div>
 
+                        {/* Precio */}
                         <div>
                             <label className="block font-medium text-[#393939] dark:text-gray-200">Precio</label>
                             <input
@@ -150,6 +159,21 @@ const EditarProducto: React.FC = () => {
                             />
                         </div>
 
+                        {/* Stock */}
+                        <div>
+                            <label className="block font-medium text-[#393939] dark:text-gray-200">Stock</label>
+                            <input
+                                type="number"
+                                name="stock"
+                                value={formData.stock}
+                                onChange={handleChange}
+                                required
+                                min={0}
+                                className="w-full mt-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#eb8369] dark:bg-[#1f1f1f] dark:text-white dark:border-gray-600"
+                            />
+                        </div>
+
+                        {/* Región */}
                         <div>
                             <label className="block font-medium text-[#393939] dark:text-gray-200">Región</label>
                             <select

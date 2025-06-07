@@ -14,21 +14,22 @@ import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { BACKEND_URL } from '../api/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from '../api/axiosConfig';
+import { useCart } from '../context/CartContext';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
+  const { items: cartItems } = useCart(); // ✅ Usamos el CartContext
   const navigate = useNavigate();
   const location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
   const [avatarTimestamp, setAvatarTimestamp] = useState(Date.now());
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
   const profileRef = useRef<HTMLDivElement>(null);
   const cartRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   if (!user) return null;
 
@@ -39,6 +40,9 @@ const Navbar: React.FC = () => {
       }
       if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
         setCartOpen(false);
+      }
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -53,21 +57,6 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setAvatarTimestamp(Date.now());
   }, [user.avatarUrl]);
-
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get('/cart');
-        setCartItems(response.data.items);
-      } catch (error) {
-        console.error('Error al cargar el carrito', error);
-      }
-    };
-
-    if (!user?.role?.includes('admin')) {
-      fetchCartItems();
-    }
-  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -87,10 +76,29 @@ const Navbar: React.FC = () => {
 
   const ringColor = user.role === 'admin' ? 'ring-red-400' : 'ring-green-400';
 
+  const rutas = user.role === 'admin'
+    ? [
+        { label: 'Inicio Admin', to: '/admin' },
+        { label: 'Crear Receta', to: '/crear' },
+        { label: 'Crear Categoría', to: '/crear-categoria' },
+        { label: 'Gestión de Usuarios', to: '/admin/usuarios' },
+        { label: 'Aprobar Productos', to: '/admin-productos' },
+        { label: 'Crear Producto', to: '/crear-producto' },
+        { label: 'Gestión de Regiones', to: '/admin/regiones' },
+      ]
+    : [
+        { label: 'Inicio', to: '/user' },
+        { label: 'Crear Receta', to: '/crear' },
+        { label: 'Mis Recetas', to: '/mis-recetas' },
+        { label: 'Crear Producto', to: '/crear-producto' },
+        { label: 'Mis Productos', to: '/mis-productos' },
+        { label: 'Carrito', to: '/carrito' },
+      ];
+
   return (
     <header className="relative z-50 bg-white dark:bg-[#1e1e1e] border-b border-gray-300 shadow-sm px-4 sm:px-6 py-3 transition-colors duration-300">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="relative flex items-center gap-3" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Abrir menú"
@@ -98,6 +106,33 @@ const Navbar: React.FC = () => {
           >
             {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
           </button>
+
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.ul
+                initial={{ x: -200, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -200, opacity: 0 }}
+                className="absolute left-0 top-12 w-64 bg-white dark:bg-[#2b2b2b] border shadow-xl rounded-xl py-2 z-50 space-y-1"
+              >
+                {rutas.map((item, idx) => (
+                  <li key={idx}>
+                    <Link
+                      to={item.to}
+                      onClick={() => setMenuOpen(false)}
+                      className={`block px-4 py-2 text-sm text-[#393939] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ${
+                        location.pathname === item.to
+                          ? 'font-semibold border-l-4 border-[#eb8369] bg-gray-100 dark:bg-gray-800'
+                          : ''
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
 
           <div
             className="flex items-center gap-2 cursor-pointer"

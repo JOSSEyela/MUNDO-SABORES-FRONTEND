@@ -14,6 +14,7 @@ interface FormData {
   description: string;
   price: string;
   regionId: string;
+  stock: string;
 }
 
 const CrearProducto: React.FC = () => {
@@ -24,6 +25,7 @@ const CrearProducto: React.FC = () => {
     description: '',
     price: '',
     regionId: '',
+    stock: '',
   });
 
   const [regiones, setRegiones] = useState<Region[]>([]);
@@ -60,8 +62,14 @@ const CrearProducto: React.FC = () => {
     setIsSubmitting(true);
 
     const priceNum = parseFloat(formData.price);
-    if (priceNum <= 0 || formData.name.trim().length < 3) {
-      setError('Por favor verifica el nombre y precio del producto');
+    const stockNum = parseInt(formData.stock);
+
+    if (
+      priceNum <= 0 ||
+      stockNum <= 0 ||
+      formData.name.trim().length < 3
+    ) {
+      setError('Verifica el nombre, precio y stock del producto.');
       setIsSubmitting(false);
       return;
     }
@@ -72,10 +80,11 @@ const CrearProducto: React.FC = () => {
         description: formData.description,
         price: priceNum,
         regionId: Number(formData.regionId),
+        stock: stockNum,
       });
 
       setMensaje('✅ Producto creado exitosamente');
-      setFormData({ name: '', description: '', price: '', regionId: '' });
+      setFormData({ name: '', description: '', price: '', regionId: '', stock: '' });
       setTimeout(() => navigate('/mis-productos'), 1200);
     } catch (err: any) {
       console.error(err);
@@ -110,6 +119,7 @@ const CrearProducto: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Nombre */}
             <div>
               <label htmlFor="name" className="block font-medium text-[#393939] dark:text-gray-200">
                 Nombre
@@ -120,7 +130,6 @@ const CrearProducto: React.FC = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                aria-label="Nombre del producto"
                 placeholder="Ej. Café Putumayo"
                 className={`w-full mt-1 px-4 py-2 border rounded focus:outline-none transition 
                   ${formData.name.length > 0 && formData.name.length < 3 ? 'border-red-500 ring-red-400' : 'focus:ring-2 focus:ring-[#eb8369]'} 
@@ -131,6 +140,7 @@ const CrearProducto: React.FC = () => {
               )}
             </div>
 
+            {/* Descripción */}
             <div>
               <label htmlFor="description" className="block font-medium text-[#393939] dark:text-gray-200">
                 Descripción
@@ -147,6 +157,7 @@ const CrearProducto: React.FC = () => {
               />
             </div>
 
+            {/* Precio */}
             <div>
               <label htmlFor="price" className="block font-medium text-[#393939] dark:text-gray-200">
                 💲 Precio
@@ -160,7 +171,6 @@ const CrearProducto: React.FC = () => {
                 onChange={handleChange}
                 required
                 placeholder="Ej. 7500"
-                aria-label="Precio del producto"
                 className={`w-full mt-1 px-4 py-2 border rounded focus:outline-none transition 
                   ${parseFloat(formData.price) <= 0 ? 'border-red-500 ring-red-400' : 'focus:ring-2 focus:ring-[#eb8369]'} 
                   dark:bg-[#1f1f1f] dark:text-white dark:border-gray-600`}
@@ -170,6 +180,29 @@ const CrearProducto: React.FC = () => {
               )}
             </div>
 
+            {/* Stock */}
+            <div>
+              <label htmlFor="stock" className="block font-medium text-[#393939] dark:text-gray-200">
+                📦 Stock Disponible
+              </label>
+              <input
+                id="stock"
+                type="number"
+                name="stock"
+                value={formData.stock}
+                onChange={handleChange}
+                required
+                placeholder="Ej. 30"
+                className={`w-full mt-1 px-4 py-2 border rounded focus:outline-none transition 
+                  ${parseInt(formData.stock) <= 0 ? 'border-red-500 ring-red-400' : 'focus:ring-2 focus:ring-[#eb8369]'} 
+                  dark:bg-[#1f1f1f] dark:text-white dark:border-gray-600`}
+              />
+              {formData.stock && parseInt(formData.stock) <= 0 && (
+                <p className="text-xs text-red-500 mt-1">El stock debe ser mayor a cero.</p>
+              )}
+            </div>
+
+            {/* Región */}
             <div>
               <label htmlFor="regionId" className="block font-medium text-[#393939] dark:text-gray-200">
                 Región
@@ -191,6 +224,7 @@ const CrearProducto: React.FC = () => {
               </select>
             </div>
 
+            {/* Botones */}
             <div className="flex justify-between items-center pt-4">
               <button
                 type="button"
@@ -216,4 +250,3 @@ const CrearProducto: React.FC = () => {
 };
 
 export default CrearProducto;
-
