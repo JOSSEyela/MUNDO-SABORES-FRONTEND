@@ -22,7 +22,7 @@ import RegionesPanel from '../pages/admin/RegionesPanel';
 
 import PrivateRoute from './PrivateRoute';
 import RecetaDetalle from '../pages/RecetaDetalle';
-import CarritoPage from '../pages/CarritoPage';
+import CarritoPage from '../pages/Carrito'; // ✅ Ruta del carrito
 
 const AppRouter: React.FC = () => {
   return (
@@ -33,7 +33,7 @@ const AppRouter: React.FC = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Ruta protegida compartida: Ver detalle de receta (con comentarios) */}
+      {/* Ruta protegida compartida: Ver detalle de receta */}
       <Route
         path="/recetas/:id"
         element={
@@ -153,6 +153,7 @@ const AppRouter: React.FC = () => {
         }
       />
 
+      {/* Ruta protegida del carrito */}
       <Route
         path="/carrito"
         element={
@@ -161,7 +162,6 @@ const AppRouter: React.FC = () => {
           </PrivateRoute>
         }
       />
-
 
       {/* Ruta 404 */}
       <Route

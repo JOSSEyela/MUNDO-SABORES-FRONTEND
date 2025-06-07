@@ -6,7 +6,6 @@ import {
   UserCircleIcon,
   ArrowLeftOnRectangleIcon,
   ChevronRightIcon,
-  ShoppingCartIcon,
 } from '@heroicons/react/24/solid';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -14,21 +13,18 @@ import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { BACKEND_URL } from '../api/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCart } from '../context/CartContext';
 
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { items: cartItems } = useCart(); // ✅ Usamos el CartContext
   const navigate = useNavigate();
   const location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const [avatarTimestamp, setAvatarTimestamp] = useState(Date.now());
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+
   const profileRef = useRef<HTMLDivElement>(null);
-  const cartRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   if (!user) return null;
@@ -37,9 +33,6 @@ const Navbar: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
-      }
-      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
-        setCartOpen(false);
       }
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
@@ -57,6 +50,11 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setAvatarTimestamp(Date.now());
   }, [user.avatarUrl]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setProfileOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -92,17 +90,18 @@ const Navbar: React.FC = () => {
         { label: 'Mis Recetas', to: '/mis-recetas' },
         { label: 'Crear Producto', to: '/crear-producto' },
         { label: 'Mis Productos', to: '/mis-productos' },
-        { label: 'Carrito', to: '/carrito' },
+        // Carrito removido aquí
       ];
 
   return (
     <header className="relative z-50 bg-white dark:bg-[#1e1e1e] border-b border-gray-300 shadow-sm px-4 sm:px-6 py-3 transition-colors duration-300">
       <div className="flex items-center justify-between">
+        {/* Menú lateral y logo */}
         <div className="relative flex items-center gap-3" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Abrir menú"
-            className="btn btn-sm btn-ghost text-[#393939] dark:text-white transition-all duration-300 hover:scale-105"
+            className="text-[#393939] dark:text-white"
           >
             {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
           </button>
@@ -121,9 +120,7 @@ const Navbar: React.FC = () => {
                       to={item.to}
                       onClick={() => setMenuOpen(false)}
                       className={`block px-4 py-2 text-sm text-[#393939] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ${
-                        location.pathname === item.to
-                          ? 'font-semibold border-l-4 border-[#eb8369] bg-gray-100 dark:bg-gray-800'
-                          : ''
+                        location.pathname === item.to ? 'font-semibold border-l-4 border-[#eb8369]' : ''
                       }`}
                     >
                       {item.label}
@@ -150,48 +147,8 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
+        {/* Iconos derecho: tema, perfil */}
         <div className="flex items-center gap-4">
-          {!user?.role?.includes('admin') && (
-            <div className="relative" ref={cartRef}>
-              <button
-                onClick={() => setCartOpen(!cartOpen)}
-                className="text-[#393939] dark:text-white hover:text-[#eb8369] dark:hover:text-[#eb8369]"
-                title="Ver carrito"
-              >
-                <ShoppingCartIcon className="w-6 h-6" />
-              </button>
-              <AnimatePresence>
-                {cartOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#2b2b2b] border shadow-xl rounded-xl p-4 z-50"
-                  >
-                    <h2 className="text-sm font-bold mb-2 text-[#393939] dark:text-white">Productos en el carrito</h2>
-                    {cartItems.length === 0 ? (
-                      <p className="text-sm text-gray-500">Tu carrito está vacío.</p>
-                    ) : (
-                      <ul className="max-h-52 overflow-y-auto space-y-1">
-                        {cartItems.map((item: any, idx: number) => (
-                          <li key={idx} className="text-sm text-[#393939] dark:text-gray-200">
-                            - {item.producto.nombre} (x{item.quantity})
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <button
-                      onClick={() => navigate('/carrito')}
-                      className="mt-4 w-full bg-[#eb8369] text-white py-1.5 rounded hover:bg-[#d56c55] transition-all"
-                    >
-                      Ir al carrito
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="transition transform hover:rotate-180 duration-500 text-[#393939] dark:text-white hover:text-[#eb8369] dark:hover:text-[#eb8369]"
@@ -200,13 +157,13 @@ const Navbar: React.FC = () => {
             {darkMode ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
           </button>
 
+          {/* Perfil del usuario */}
           <div className="relative" ref={profileRef}>
-            <button onClick={() => setProfileOpen(!profileOpen)} className="avatar" title="Ver perfil">
+            <button onClick={() => setProfileOpen(!profileOpen)} className="avatar">
               <div className={`w-10 rounded-full ring ${ringColor} ring-offset-base-100 ring-offset-2`}>
-                <img src={avatarUrl} alt="Avatar del usuario" loading="lazy" className="object-cover w-10 h-10 rounded-full" />
+                <img src={avatarUrl} alt="Avatar" className="object-cover w-10 h-10 rounded-full" />
               </div>
             </button>
-
             <AnimatePresence>
               {profileOpen && (
                 <motion.ul
@@ -245,6 +202,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
+      {/* Breadcrumbs */}
       <div className="mt-2 ml-2 sm:ml-4">
         <nav className="text-sm text-gray-600 dark:text-gray-300 breadcrumbs">
           <ul className="flex space-x-2 items-center">
