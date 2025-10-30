@@ -1,27 +1,42 @@
-// src/api/cart.ts
-import api from './axiosConfig';
+import axios from 'axios';
+import { BACKEND_URL } from './axiosConfig';
 
-/**
- * Agrega un producto al carrito del usuario.
- * @param productoId ID del producto
- * @param quantity Cantidad a agregar (por defecto 1)
- */
-export const addToCart = (productoId: number, quantity: number = 1) =>
-    api.post('/cart/add', { productoId, quantity });
+export interface CartItem {
+    id: number;
+    quantity: number;
+    producto: {
+        id: number;
+        name: string;
+        price: number;
+        imageUrl?: string;
+    };
+}
 
-/**
- * Obtiene el carrito del usuario autenticado
- */
-export const getCart = () => api.get('/cart');
+export interface CartResponse {
+    id: number;
+    items: CartItem[];
+    creadoEn: string;
+    actualizadoEn: string;
+}
 
-/**
- * Elimina un ítem específico del carrito
- * @param itemId ID del ítem
- */
-export const removeFromCart = (itemId: number) =>
-    api.delete(`/cart/${itemId}`);
+export const getAuthHeaders = (token?: string) =>
+    token ? { Authorization: `Bearer ${token}` } : {};
 
-/**
- * Vacía el carrito completo del usuario
- */
-export const clearCart = () => api.delete('/cart');
+export const fetchCart = async (token?: string): Promise<CartResponse> => {
+    const { data } = await axios.get(`${BACKEND_URL}/cart`, {
+        headers: getAuthHeaders(token),
+    });
+    return data;
+};
+
+export const removeCartItem = async (itemId: number, token?: string) => {
+    await axios.delete(`${BACKEND_URL}/cart/${itemId}`, {
+        headers: getAuthHeaders(token),
+    });
+};
+
+export const clearCart = async (token?: string) => {
+    await axios.delete(`${BACKEND_URL}/cart`, {
+        headers: getAuthHeaders(token),
+    });
+};

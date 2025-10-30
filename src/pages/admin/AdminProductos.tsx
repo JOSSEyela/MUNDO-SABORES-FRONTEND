@@ -4,7 +4,7 @@ import api from '../../api/axiosConfig';
 import Navbar from '../Navbar';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import fondo from '../../assets/images/fondo-recetas.jpg'; // Asegúrate de tener esta imagen en tu carpeta
+import fondo from '../../assets/images/fondo-recetas.jpg';
 
 interface Producto {
   id: number;
